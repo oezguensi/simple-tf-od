@@ -43,9 +43,9 @@ app.post('/posts', function (req, res) {
   };
 
   runPythonScript(req.body.filePath, options).then(result => {
-    console.log(result)
+    res.send(result)
   }).catch(err => {
-    console.log(err)
+    res.send(err)
   });
 });
 
