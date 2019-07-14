@@ -1,39 +1,87 @@
-import React from 'react';
+import React from 'react'
+import Button from '@material-ui/core/Button'
+import CircularProgress from '@material-ui/core/CircularProgress';
+import AlertDialogSlide from './AlertComponent'
 
-export default function CreateTFRecord() {
-  let fileReader;
+export default class CreateTFRecord extends React.Component {
+  constructor(props) {
+    super(props)
 
-  const handleFileChosen = (file) => {
-    fileReader = new FileReader();
-    // fileReader.onload = loadHandler;
-    fileReader.onloadend = loadHandler;
-    fileReader.readAsText(file);
-  };
-
-  function loadHandler(event) {
-    var csv = event.target.result;
-    var allTextLines = csv.split(/\r\n|\n/);
-    var lines = [];
-    for (var i = 0; i < allTextLines.length; i++) {
-      var data = allTextLines[i].split(';');
-      var tarr = [];
-      for (var j = 0; j < data.length; j++) {
-        tarr.push(data[j]);
-      }
-      lines.push(tarr);
+    this.state = {
+      onComplete: props.onComplete,
+      loading: false,
+      progress: 0,
+      alertCompleted: false
     }
-    console.log(lines);
+
+    this.startReadingChunkedResponse = this.startReadingChunkedResponse.bind(this)
+    this.processChunks = this.processChunks.bind(this)
+    this.onChunkedResponseComplete = this.onChunkedResponseComplete.bind(this)
   }
 
+  startReadingChunkedResponse(response) {
+    var reader = response.body.getReader()
+    return reader.read().then(result => this.processChunks(result, reader));
+  }
 
-  return (
-    <div>
-      <input type='file'
-        id='file'
-        className='input-file'
-        accept='.csv'
-        onChange={e => handleFileChosen(e.target.files[0])}
-      />
-    </div>
-  )
+  processChunks(result, reader) {
+    if (!result.done) {
+      this.setState({progress: this.state.progress + 5})
+      return reader.read().then(result => this.processChunks(result, reader));
+    }
+  }
+  
+  onChunkedResponseComplete(result) {
+    this.setState({progress: 100})
+    setTimeout(() => { 
+      this.setState({loading: false, alertCompleted: true})
+      console.log('Finished process!', result)  
+    }, 2000);
+    
+  }
+  
+  onChunkedResponseError(err) {
+    console.error(err)
+  }
+
+  handleOnClick() {
+    this.setState({ loading: true })
+
+    fetch('http://localhost:4000/posts', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        filePath: '/Users/oezguensi/Code/Other\ Projects/simple-tf-od/server/custom_create_pascal_tf_record.py',
+        flags: ['--data_set=train',
+          '--imgs_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/data/imgs',
+          '--annotations_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/data/annotations',
+          '--label_map_dict={"standard": 1, "security": 2, "motorsport": 3, "missing": 4}',
+          '--out_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/records'],
+      })
+    }).then(this.startReadingChunkedResponse).then(this.onChunkedResponseComplete).catch(this.onChunkedResponseError)
+  }
+
+  handleOnDialogClose() {
+    this.setState({alertCompleted: false})
+    this.state.onComplete()
+  }
+
+  render() {
+    return (
+      (this.state.loading ?
+        <CircularProgress variant="static" value={this.state.progress} />
+        :
+        (this.state.alertCompleted ? 
+          <AlertDialogSlide onDialogClose={() => this.handleOnDialogClose()}/>
+        :  
+          <Button variant="contained" color="primary" onClick={() => this.handleOnClick()}>
+            Download
+          </Button>
+        )
+      )
+    )
+  }
 }
