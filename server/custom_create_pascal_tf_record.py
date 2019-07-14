@@ -125,26 +125,29 @@ def dict_to_tf_example(data, img_file, label_map_dict, ignore_difficult_instance
 
 
 def main():
-    writer = tf.python_io.TFRecordWriter(join(FLAGS.out_dir, FLAGS.data_set + '.record'))
+    try:
+      print('Creating tf records ...')
+      writer = tf.python_io.TFRecordWriter(join(FLAGS.out_dir, FLAGS.data_set + '.record'))
+      img_files = [f for f in glob(join(FLAGS.imgs_dir, '*')) if f.endswith('jpg') or f.endswith('png')]
+      annotation_files = glob(join(FLAGS.annotations_dir, '*xml'))
 
-    img_files = [f for f in glob(join(FLAGS.imgs_dir, '*')) if f.endswith('jpg') or f.endswith('png')]
-    annotation_files = glob(join(FLAGS.annotations_dir, '*xml'))
+      for idx, (img_file, annotation_file) in enumerate(zip(img_files, annotation_files)):
+          if idx % 100 == 0:
+              logging.info('On xml %d of %d', idx, len(annotation_files))
 
-    for idx, (img_file, annotation_file) in enumerate(zip(img_files, annotation_files)):
-        if idx % 100 == 0:
-            logging.info('On xml %d of %d', idx, len(annotation_files))
+          with tf.gfile.GFile(annotation_file, 'r') as fid:
+              xml_str = fid.read()
+          xml = etree.fromstring(xml_str)
+          data = recursive_parse_xml_to_dict(xml)['annotation']
 
-        with tf.gfile.GFile(annotation_file, 'r') as fid:
-            xml_str = fid.read()
-        xml = etree.fromstring(xml_str)
-        data = recursive_parse_xml_to_dict(xml)['annotation']
+          label_map_dict = json.loads(FLAGS.label_map_dict)
+          tf_example = dict_to_tf_example(data, img_file, label_map_dict)
+          writer.write(tf_example.SerializeToString())
 
-        label_map_dict = json.loads(FLAGS.label_map_dict)
-        tf_example = dict_to_tf_example(data, img_file, label_map_dict)
-        writer.write(tf_example.SerializeToString())
-
-    writer.close()
-
+      print('Finished running script: Created tf records!')
+      writer.close()
+    except Exception as e:
+      print('Exception occured:', e)
 
 if __name__ == '__main__':
     main()

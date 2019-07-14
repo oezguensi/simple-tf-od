@@ -8,15 +8,21 @@ export default function LabelMap() {
       method: 'POST',
       mode: 'cors',
       headers: {
-          'Content-Type': 'application/json'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-          user: {
-              name: "John",
-              email: "john@example.com"
-          }
+        filePath: '/Users/oezguensi/Code/Other\ Projects/simple-tf-od/server/custom_create_pascal_tf_record.py',
+        flags: ['--data_set=train',
+          '--imgs_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/data/imgs',
+          '--annotations_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/data/annotations',
+          '--label_map_dict={"standard": 1, "security": 2, "motorsport": 3, "missing": 4}',
+          '--out_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/records'],
+        user: {
+          name: "John",
+          email: "john@example.com"
+        }
       })
-    }).then(function(res) {
+    }).then(function (res) {
       console.log(res)
     });
   }
