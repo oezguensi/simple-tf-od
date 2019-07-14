@@ -7,8 +7,9 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
-import CreateTFRecord from './CreateTFRecordComponent'
-import ControlledExpansionPanels from './ExpansionComponent'
+import CreateTFRecord from './CreateTFRecordComponent';
+import ControlledExpansionPanels from './ExpansionComponent';
+import LabelMap from './LabelMapComponent';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -36,7 +37,7 @@ function getStepContent(step) {
       };
     case 1:
       return {
-        component: <div></div>,
+        component: <LabelMap/>,
         completeText: 'Create file'
       };
     case 2:

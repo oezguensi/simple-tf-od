@@ -1,6 +1,7 @@
 const { PythonShell } = require("python-shell");
 const express = require('express')
 const app = express()
+const bodyParser = require("body-parser");
 
 // TODO labelmapdict
 var options = {
@@ -19,13 +20,21 @@ let runPy = new Promise(function(success, nosuccess) {
   });
 });
 
-app.get('/', (req, res) => {
-  res.write('welcome\n');
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
 
-  runPy.then(function(result) {
-      console.log('Ran Python script');
-      res.end(result);
-  });
-})
+app.post('/posts', function(req, res){
+    runPy.then(function(fromRunpy) {
+      console.log(req.body);
+      res.send('ran python script')
+    });
+});
 
 app.listen(4000, () => console.log('Application listening on port 4000!'))
