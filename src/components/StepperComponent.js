@@ -147,6 +147,7 @@ import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 
 import UploadAnnotations from './UploadAnnotationsComponent'
+import ChipsArray from './LabelMapComponent'
 import ControlledExpansionPanels from './ExpansionComponent'
 import CreateTFRecord from './CreateTFRecordComponent'
 
@@ -176,15 +177,16 @@ export default function HorizontalNonLinearAlternativeLabelStepper() {
   const [completed, setCompleted] = React.useState(new Set())
   const [skipped, setSkipped] = React.useState(new Set())
   const steps = [{
-    description: 'Select campaign settings',
-    content: <UploadAnnotations />,
+    description: 'Create TensorFlow records',
+    // content: <UploadAnnotations />,
+    content: <ChipsArray />,
     action: <CreateTFRecord onComplete={handleComplete} />
   }, {
-    description: 'Create an ad group',
+    description: 'Create train configuration file',
     content: <ControlledExpansionPanels />,
     action: <Button onClick={handleComplete} className={classes.button}>Complete</Button>
   }, {
-    description: 'Create an ad',
+    description: 'Start training',
     content: null,
     action: <Button disabled={!allStepsCompleted()} className={classes.button}>Start Training</Button>
   }]
