@@ -1,7 +1,7 @@
-import React, { useRef, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Chip from '@material-ui/core/Chip';
-import TextField from '@material-ui/core/TextField';
+import React, { useRef, useEffect } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import Chip from '@material-ui/core/Chip'
+import TextField from '@material-ui/core/TextField'
 
 
 const useStyles = makeStyles(theme => ({
@@ -18,25 +18,7 @@ const useStyles = makeStyles(theme => ({
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
     }
-}));
-
-
-
-
-//   /**
-//    * Component that alerts if you click outside of it
-//    */
-//   export default function OutsideAlerter(props) {
-//     const wrapperRef = useRef(null);
-//     useOutsideAlerter(wrapperRef);
-
-//     return <div ref={wrapperRef}>{props.children}</div>;
-//   }
-
-
-
-
-
+}))
 
 
 export default function ChipsArray() {
@@ -48,57 +30,50 @@ export default function ChipsArray() {
             }
         }
         useEffect(() => {
-            document.addEventListener("mousedown", handleClickOutside);
+            document.addEventListener("mousedown", handleClickOutside)
             return () => {
                 document.removeEventListener("mousedown", handleClickOutside)
             }
         })
     }
 
-    const wrapperRef = useRef(null);
-    useOutsideAlerter(wrapperRef);
+    const wrapperRef = useRef(null)
+    useOutsideAlerter(wrapperRef)
 
-    // return <div ref={wrapperRef}>{props.children}</div>;
-
-
-    const classes = useStyles();
+    const classes = useStyles()
     const [chipData, setChipData] = React.useState([
         { key: 0, label: 'Angular' },
         { key: 1, label: 'jQuery' },
         { key: 2, label: 'Polymer' },
         { key: 3, label: 'React' },
         { key: 4, label: 'Vue.js' },
-    ]);
+    ])
 
     const [selectedChip, setSelectedChip] = React.useState(null)
-    const [text, setText] = React.useState('Cat in the Hat');
+    const [text, setText] = React.useState('Cat in the Hat')
     const outsideExceptionIds = ["add-category"]
 
     const handleDelete = chipToDelete => () => {
-        setChipData(chips => chips.filter(chip => chip.key !== chipToDelete.key));
-    };
+        setChipData(chips => chips.filter(chip => chip.key !== chipToDelete.key))
+    }
 
     const handleChange = () => event => {
-        setText(event.target.value);
-    };
+        setText(event.target.value)
+    }
 
     const handleOnSubmit = (event) => {
         event.preventDefault()
-        console.log(selectedChip)
         let newChipData = [...chipData]
         if (selectedChip) {
-            newChipData[selectedChip] = {key: selectedChip, label: text};
+            newChipData[selectedChip] = { key: selectedChip, label: text }
         } else {
-            newChipData = [...chipData, { key: chipData.length, label: text }]
+            newChipData = [...chipData, { key: chipData[chipData.length - 1].key + 1, label: text }]
         }
-        
         setChipData(newChipData)
-        console.log('submitted')
     }
 
     const handleOnClick = chipToEdit => () => {
         setSelectedChip(chipToEdit.key)
-        console.log('clicked chip')
         setText(chipToEdit.label)
     }
 
@@ -128,8 +103,8 @@ export default function ChipsArray() {
                         onDelete={handleDelete(data)}
                         className={classes.chip}
                     />
-                );
+                )
             })}
         </div>
-    );
+    )
 }
