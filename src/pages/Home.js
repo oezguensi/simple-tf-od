@@ -18,7 +18,7 @@ import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel';
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { StepContent, StepButton } from '@material-ui/core';
+import { StepContent, StepButton, StepConnector } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -58,17 +58,17 @@ const useStyles = makeStyles(theme => ({
 export default function Home(props) {
     const classes = useStyles();
 
-  function nextPath(path) {
-    props.history.push(path);
-  }
+    function nextPath(path) {
+        props.history.push(path);
+    }
 
-  const handleStep = step => () => {
-    nextPath(`/steps/${step}`)
-  }
+    const handleStep = step => () => {
+        nextPath(`/steps/${step}`)
+    }
 
-  const handleClick = step => () => {
-    nextPath(`/steps/${step}`)
-  }
+    const handleClick = step => () => {
+        nextPath(`/steps/${step}`)
+    }
 
     return (
         <Grid container component="main" className={classes.root}>
@@ -87,6 +87,19 @@ export default function Home(props) {
                         Thanks to the amazing community and great minds there are solutions for many problems publicly available.
                         So is the TensorFlow Object Detection API, that facilitates training a model to detect objects in images. This app makes it even simpler to dive into the algorithm.
                     </Typography>
+                    <Stepper orientation="vertical" activeStep={0}>
+                        <Step completed={true} active={true} disabled={true}>
+                            <StepButton
+                                onClick={handleStep(1)}
+                            >
+                                testasdfasdf
+                                </StepButton>
+
+                            <StepContent>Test</StepContent>
+                        </Step>
+                        
+                    </Stepper>
+                    
                     <Stepper orientation="vertical" activeStep={2}>
                         <Step completed={false} active={true}>
                             <StepButton
@@ -94,7 +107,7 @@ export default function Home(props) {
                             >
                                 test
                             </StepButton>
-                            
+
                             <StepContent>Test</StepContent>
                         </Step>
                         <Step completed={false} active={true}>
@@ -103,7 +116,7 @@ export default function Home(props) {
                             >
                                 sadfsadfsd
                             </StepButton>
-                            
+
                             <StepContent>Test</StepContent>
                         </Step>
                         <Step completed={false} active={true}>
@@ -112,7 +125,7 @@ export default function Home(props) {
                             >
                                 test
                             </StepButton>
-                            
+
                             <StepContent>Test</StepContent>
                         </Step>
                     </Stepper>
