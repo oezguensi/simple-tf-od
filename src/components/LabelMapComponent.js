@@ -42,15 +42,13 @@ export default function LabelMapChips(props) {
     useOutsideAlerter(wrapperRef)
 
     const classes = useStyles()
-    const [chipData, setChipData] = React.useState(props.labelMapCategories)
 
     const [selectedChip, setSelectedChip] = React.useState(null)
     const [text, setText] = React.useState('')
     const outsideExceptionIds = ["add-category"]
 
     const handleDelete = chipIndexToDelete => () => {
-        let newChipData = chipData.filter((_, index) => index !== chipIndexToDelete)
-        setChipData(newChipData)
+        let newChipData = props.labelMapCategories.filter((_, index) => index !== chipIndexToDelete)
         props.onChange(newChipData)
     }
 
@@ -60,13 +58,12 @@ export default function LabelMapChips(props) {
 
     const handleOnSubmit = (event) => {
         event.preventDefault()
-        let newChipData = [...chipData]
+        let newChipData = [...props.labelMapCategories]
         if (selectedChip !== null) {
             newChipData[selectedChip] = text
         } else {
-            newChipData = [...chipData, text]
+            newChipData = [...props.labelMapCategories, text]
         }
-        setChipData(newChipData)
         setText('')
 
         props.onChange(newChipData)
@@ -90,7 +87,7 @@ export default function LabelMapChips(props) {
                     variant="outlined"
                 />
             </form>
-            {chipData.map((text, index) => {
+            {props.labelMapCategories.map((text, index) => {
                 return (
                     <Chip
                         ref={index == selectedChip ? wrapperRef : null}

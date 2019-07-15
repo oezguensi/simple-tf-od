@@ -46,6 +46,31 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function CodeSnippetCard(props) {
+    const useStyles = makeStyles(theme => ({
+        root: {
+            flexGrow: 1,
+        },
+        paper: {
+    
+        },
+        card: {
+            maxWidth: props.width,
+            minWidth: props.width,
+            maxHeight: props.height,
+            minHeight: props.height,
+        },
+        codeSnippet: {
+            maxHeight: 300,
+        },
+        expand: {
+            transform: 'rotate(0deg)',
+            marginLeft: 'auto',
+            transition: theme.transitions.create('transform', {
+                duration: theme.transitions.duration.shortest,
+            }),
+        },
+    }));
+
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
 
