@@ -41,20 +41,14 @@ export default function ChipsArray() {
     useOutsideAlerter(wrapperRef)
 
     const classes = useStyles()
-    const [chipData, setChipData] = React.useState([
-        { key: 0, label: 'Angular' },
-        { key: 1, label: 'jQuery' },
-        { key: 2, label: 'Polymer' },
-        { key: 3, label: 'React' },
-        { key: 4, label: 'Vue.js' },
-    ])
+    const [chipData, setChipData] = React.useState([])
 
     const [selectedChip, setSelectedChip] = React.useState(null)
     const [text, setText] = React.useState('Cat in the Hat')
     const outsideExceptionIds = ["add-category"]
 
-    const handleDelete = chipToDelete => () => {
-        setChipData(chips => chips.filter(chip => chip.key !== chipToDelete.key))
+    const handleDelete = chipIndexToDelete => () => {
+        setChipData(chips => chips.filter((_, index) => index !== chipIndexToDelete))
     }
 
     const handleChange = () => event => {
@@ -64,17 +58,17 @@ export default function ChipsArray() {
     const handleOnSubmit = (event) => {
         event.preventDefault()
         let newChipData = [...chipData]
-        if (selectedChip) {
-            newChipData[selectedChip] = { key: selectedChip, label: text }
+        if (selectedChip !== null) {
+            newChipData[selectedChip] = text
         } else {
-            newChipData = [...chipData, { key: chipData[chipData.length - 1].key + 1, label: text }]
+            newChipData = [...chipData, text]
         }
         setChipData(newChipData)
     }
 
-    const handleOnClick = chipToEdit => () => {
-        setSelectedChip(chipToEdit.key)
-        setText(chipToEdit.label)
+    const handleOnClick = (text, index) => () => {
+        setSelectedChip(index)
+        setText(text)
     }
 
     return (
@@ -91,16 +85,15 @@ export default function ChipsArray() {
                     variant="outlined"
                 />
             </form>
-            {chipData.map(data => {
-
+            {chipData.map((text, index) => {
                 return (
                     <Chip
-                        ref={data.key == selectedChip ? wrapperRef : null}
-                        key={data.key}
-                        color={selectedChip == data.key ? "primary" : "secondary"}
-                        label={data.label}
-                        onClick={handleOnClick(data)}
-                        onDelete={handleDelete(data)}
+                        ref={index == selectedChip ? wrapperRef : null}
+                        key={index}
+                        color={selectedChip == index ? "primary" : "secondary"}
+                        label={text}
+                        onClick={handleOnClick(text, index)}
+                        onDelete={handleDelete(index)}
                         className={classes.chip}
                     />
                 )
