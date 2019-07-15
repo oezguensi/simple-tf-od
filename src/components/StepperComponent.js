@@ -116,6 +116,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper() {
     description: "h4. Heading",
     content: <div>
       <Grid
+        className={classes.root}
         container
         direction="row"
         justify="center"
