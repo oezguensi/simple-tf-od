@@ -2,6 +2,7 @@ import React from 'react';
 import { ThemeProvider } from '@material-ui/styles';
 import './App.css';
 import HorizontalCustomStepper from './components/StepperComponent'
+import Home from './pages/Home'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme, Divider } from '@material-ui/core';
 import red from '@material-ui/core/colors/red';
@@ -26,7 +27,7 @@ function App() {
     <div className="App">
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <HorizontalCustomStepper></HorizontalCustomStepper>
+        <Home />
       </ThemeProvider>
     </div>
   );
