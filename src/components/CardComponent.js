@@ -19,32 +19,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 
-
-const useStyles = makeStyles(theme => ({
-    root: {
-        flexGrow: 1,
-    },
-    paper: {
-
-    },
-    card: {
-        maxWidth: 500,
-        minWidth: 500,
-        maxHeight: 550,
-        minHeight: 550,
-    },
-    codeSnippet: {
-        maxHeight: 300,
-    },
-    expand: {
-        transform: 'rotate(0deg)',
-        marginLeft: 'auto',
-        transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
-        }),
-    },
-}));
-
 export default function CodeSnippetCard(props) {
     const useStyles = makeStyles(theme => ({
         root: {
@@ -54,13 +28,11 @@ export default function CodeSnippetCard(props) {
     
         },
         card: {
-            maxWidth: props.width,
-            minWidth: props.width,
-            maxHeight: props.height,
-            minHeight: props.height,
+            width: props.width,
+            height: props.height,
         },
         codeSnippet: {
-            maxHeight: 300,
+            height: props.codeHeight
         },
         expand: {
             transform: 'rotate(0deg)',

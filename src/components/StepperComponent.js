@@ -106,7 +106,7 @@ To assign the categories/labels of the bounding boxes in the annotation files, t
 This mapping follows a specific structure resembling json. The file is saved with the .pbtxt extension.
 `
 
-const getConfig = (numCategories, modelArchitecture, batchSize) => {
+const getConfig = (modelArchitecture, pretrained, numCategories, outWidth, outHeight, batchSize, optimizer) => {
   return `model {
   ssd {
     num_classes: ${numCategories}
@@ -145,8 +145,8 @@ const getConfig = (numCategories, modelArchitecture, batchSize) => {
     }
     image_resizer {
       fixed_shape_resizer {
-        height: 300
-        width: 300
+        height: ${outHeight}
+        width: ${outWidth}
       }
     }
     box_predictor {
@@ -243,7 +243,7 @@ const getConfig = (numCategories, modelArchitecture, batchSize) => {
 train_config: {
   batch_size: ${batchSize}
   optimizer {
-    rms_prop_optimizer: {
+    ${optimizer}: {
       learning_rate: {
         exponential_decay_learning_rate {
           initial_learning_rate: 0.004
@@ -256,8 +256,12 @@ train_config: {
       epsilon: 1.0
     }
   }
+  ${pretrained ? 
+  `
   fine_tune_checkpoint: "PATH_TO_BE_CONFIGURED/model.ckpt"
   fine_tune_checkpoint_type:  "detection"
+  `
+  : ``}
   # Note: The below line limits the training process to 200K steps, which we
   # empirically found to be sufficient enough to train the pets dataset. This
   # effectively bypasses the learning rate schedule (the learning rate will
@@ -303,9 +307,14 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
   const [completed, setCompleted] = React.useState(new Set())
   const [skipped, setSkipped] = React.useState(new Set())
   const [labelMapCategories, setLabelMapCategories] = React.useState([])
-  const [numCategories, setNumCategories] = React.useState(0)
+  
   const [modelArchitecture, setModelArchitecture] = React.useState("ssd_mobilenet_v1_coco")
+  const [numCategories, setNumCategories] = React.useState(labelMapCategories.length)
+  const [outWidth, setOutWidth] = React.useState(300)
+  const [outHeight, setOutHeight] = React.useState(300)
   const [batchSize, setBatchSize] = React.useState(24)
+  const [optimizer, setOptimizer] = React.useState("rms_prop_optimizer")
+  const [pretrained, setPretrained] = React.useState(false)
 
   const steps = [{
     stepperTitle: 'Create TensorFlow records',
@@ -345,16 +354,33 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
       alignItems="center"
     >
       <Grid item>
-        <CodeSnippetCard width={700} height={550} title="Configuration for Training" subheader="JSON Format" language="json" code={getConfig(numCategories, modelArchitecture, batchSize)} description={pascalVOCDescription} />
+        <CodeSnippetCard
+          width={800}
+          height={750}
+          codeHeight={600}
+          title="Configuration for Training"
+          subheader="JSON Format"
+          language="json"
+          code={getConfig(modelArchitecture, pretrained, numCategories, outWidth, outHeight, batchSize, optimizer)}
+          description={pascalVOCDescription}
+        />
       </Grid>
       <Grid item>
         <ControlledExpansionPanels
-          numCategories={numCategories}
-          onChangeNumCategories={setNumCategories}
           modelArchitecture={modelArchitecture}
           onSelectModelArchitecture={setModelArchitecture}
+          pretrained={pretrained}
+          onSwitchPretrained={setPretrained}
+          numCategories={numCategories}
+          onChangeNumCategories={setNumCategories}
+          outWidth={outWidth}
+          onChangeOutWidth={setOutWidth}
+          outHeight={outHeight}
+          onChangeOutHeight={setOutHeight}
           batchSize={batchSize}
           onChangeBatchSize={setBatchSize}
+          optimizer={optimizer}
+          onSelectOptimizer={setOptimizer}
         />
       </Grid>
     </Grid>,

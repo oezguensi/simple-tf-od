@@ -43,25 +43,21 @@ const modelArchitectures = [
   "ssdlite_mobilenet_v2_coco",
   "ssd_inception_v2_coco"]
 
+const optimizers = [
+  "rms_prop_optimizer",
+  "momentum_optimizer",
+  "adam_optimizer"
+]
+
 export default function ControlledExpansionPanels(props) {
   const classes = useStyles();
+  const inputLabel = React.useRef(null);
   const [expanded, setExpanded] = React.useState(false);
   const [selectedTabs, setSelectedTab] = React.useState([0, 0])
-  const [outSize, setOutSize] = React.useState([300, 300])
-  // const [values, setValues] = React.useState({
-  //   age: '',
-  //   name: 'hai',
-  // });
-
-  const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
 
+  // const [checkedPretrained, setCheckedPretrained] = React.useState(true)
 
-  const [checkedPretrained, setCheckedPretrained] = React.useState(true)
-
-  const handleSwitch = name => event => {
-    setCheckedPretrained(event.target.checked)
-  };
 
 
   React.useEffect(() => {
@@ -75,33 +71,26 @@ export default function ControlledExpansionPanels(props) {
   //   }));
   // }
 
+  const info = {
+    "batch-size-textfield": props.onChangeBatchSize,
+    "num-categories-textfield": props.onChangeNumCategories,
+    "model-architecture-select": props.onSelectModelArchitecture,
+    "pretrained-switch": props.onSwitchPretrained,
+    "optimizer-select": props.onSelectOptimizer,
+    "out-width-textfield": props.onChangeOutWidth,
+    "out-height-textfield": props.onChangeOutHeight
+  }
+
+  const handleChange = () => event => {
+    info[event.target.name](event.target.value)
+  }
+
+  const handleSwitch = () => event => {
+    info[event.target.name](event.target.checked)
+  }
 
   const handleExpand = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
-  };
-
-  const handleSelectModelArchitecture = () => event => {
-    props.onSelectModelArchitecture(event.target.value)
-  }
-
-  const handleChangeNumCategories = () => event => {
-    props.onChangeNumCategories(event.target.value)
-  }
-
-  const handleChangeBatchSize = () => event => {
-    props.onChangeBatchSize(event.target.value)
-  }
-
-  const handleChangeWidth = () => event => {
-    let newSize = [...outSize]
-    newSize[0] = event.target.value
-    setOutSize(newSize)
-  }
-
-  const handleChangeHeight = () => event => {
-    let newSize = [...outSize]
-    newSize[1] = event.target.value
-    setOutSize(newSize)
   }
 
   const handleOnTabChange = (panelIndex) => (event, index) => {
@@ -128,9 +117,9 @@ export default function ControlledExpansionPanels(props) {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={checkedPretrained}
-                    onChange={handleSwitch('checkedPretrained')}
-                    value="checkedPretrained"
+                    checked={props.pretrained}
+                    name="pretrained-switch"
+                    onChange={handleSwitch('name')}
                     color="primary"
                     inputProps={{ 'aria-label': 'primary checkbox' }}
                   />
@@ -144,7 +133,8 @@ export default function ControlledExpansionPanels(props) {
                 </InputLabel>
                 <Select
                   value={props.modelArchitecture}
-                  onChange={handleSelectModelArchitecture('name')}
+                  name="model-architecture-select"
+                  onChange={handleChange('name')}
                   input={<OutlinedInput labelWidth={labelWidth} name="age" id="outlined-age-simple" />}
                 >
                   {modelArchitectures.map((model, index) => <MenuItem key={index} value={model}>{model}</MenuItem>)}
@@ -156,9 +146,10 @@ export default function ControlledExpansionPanels(props) {
             <TextField
               id="num-categories"
               label="Number of categories"
+              name="num-categories-textfield"
               className={classes.textField}
               value={props.numCategories}
-              onChange={handleChangeNumCategories('name')}
+              onChange={handleChange('name')}
               margin="normal"
               variant="outlined"
             />
@@ -166,18 +157,19 @@ export default function ControlledExpansionPanels(props) {
           {selectedTabs[0] === 2 &&
             <div>
               <TextField
-                label="Output Width"
+                label="Output Height"
                 className={classes.textField}
-                value={outSize[0]}
-                onChange={handleChangeWidth('name')}
+                value={props.outHeight}
+                onChange={handleChange('name')}
                 margin="normal"
                 variant="outlined"
               />
               <TextField
-                label="Output Height"
+                label="Output Width"
                 className={classes.textField}
-                value={outSize[1]}
-                onChange={handleChangeHeight('name')}
+                value={props.outWidth}
+                name="out-width-textfield"
+                onChange={handleChange('name')}
                 margin="normal"
                 variant="outlined"
               />
@@ -197,51 +189,33 @@ export default function ControlledExpansionPanels(props) {
           </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <CenteredTabs selectedTab={selectedTabs[1]} onTabChange={handleOnTabChange(1)} tabTitles={["Batch Size"]} />
+          <CenteredTabs selectedTab={selectedTabs[1]} onTabChange={handleOnTabChange(1)} tabTitles={["Batch Size", "Optimizer"]} />
           {selectedTabs[1] == 0 &&
             <TextField
               label="Batch Size"
+              name="batch-size-textfield"
               className={classes.textField}
               value={props.batchSize}
-              onChange={handleChangeBatchSize('name')}
+              onChange={handleChange('name')}
               margin="normal"
               variant="outlined"
             />
           }
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-
-      <ExpansionPanel expanded={expanded === 'panel3'} onChange={handleExpand('panel3')}>
-        <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel3bh-content"
-          id="panel3bh-header"
-        >
-          <Typography className={classes.heading}>Advanced settings</Typography>
-          <Typography className={classes.secondaryHeading}>
-            Filtering has been entirely disabled for whole web server
-          </Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <Typography>
-            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit amet egestas eros,
-            vitae egestas augue. Duis vel est augue.
-          </Typography>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-      <ExpansionPanel expanded={expanded === 'panel4'} onChange={handleExpand('panel4')}>
-        <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel4bh-content"
-          id="panel4bh-header"
-        >
-          <Typography className={classes.heading}>Personal data</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <Typography>
-            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit amet egestas eros,
-            vitae egestas augue. Duis vel est augue.
-          </Typography>
+          {selectedTabs[1] == 1 &&
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel ref={inputLabel} htmlFor="outlined-age-simple">
+                Model
+            </InputLabel>
+              <Select
+                value={props.optimizer}
+                name="optimizer-select"
+                onChange={handleChange('name')}
+                input={<OutlinedInput labelWidth={labelWidth} name="age" id="outlined-age-simple" />}
+              >
+                {optimizers.map((optimizer, index) => <MenuItem key={index} value={optimizer}>{optimizer}</MenuItem>)}
+              </Select>
+            </FormControl>
+          }
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </Container>
