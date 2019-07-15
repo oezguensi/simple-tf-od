@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-export default function ChipsArray(props) {
+export default function LabelMapChips(props) {
 
     function useOutsideAlerter(ref) {
         function handleClickOutside(event) {
