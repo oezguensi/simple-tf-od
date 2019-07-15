@@ -17,7 +17,11 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Fade from '@material-ui/core/Fade';
+import Grid from '@material-ui/core/Grid';
 
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { ClipboardTextOutline, ClipboardCheck } from 'mdi-material-ui'
 
 export default function CodeSnippetCard(props) {
     const useStyles = makeStyles(theme => ({
@@ -25,7 +29,7 @@ export default function CodeSnippetCard(props) {
             flexGrow: 1,
         },
         paper: {
-    
+
         },
         card: {
             width: props.width,
@@ -41,10 +45,21 @@ export default function CodeSnippetCard(props) {
                 duration: theme.transitions.duration.shortest,
             }),
         },
+        icon: {
+            fontSize: 24
+        },
     }));
 
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
+    const [copied, setCopied] = React.useState(false)
+
+    const handleOnCopy = () => {
+        setCopied(true)
+        setTimeout(() => {
+            setCopied(false)
+        }, 3000)
+    }
 
     function handleExpandClick() {
         setExpanded(!expanded);
@@ -54,9 +69,31 @@ export default function CodeSnippetCard(props) {
         <Card className={classes.card}>
             <CardHeader
                 action={
-                    <IconButton aria-label="Settings">
-                        <MoreVertIcon />
-                    </IconButton>
+                    <CopyToClipboard onCopy={handleOnCopy} text={props.code}>
+                        <Grid
+                            container
+                            direction="row"
+                            justify="flex-end"
+                            alignItems="center"
+                        >
+                            <Grid item>
+                                <Fade
+                                    mountOnEnter unmountOnExit
+                                    in={copied}
+                                    {...(copied ? { timeout: 1500 } : {})}
+                                    {...(!copied ? { timeout: 1000 } : {})}
+                                >
+                                    <Typography component="div">Copied to clipboard!</Typography>
+                                </Fade>
+                            </Grid>
+                            <Grid item>
+                                <IconButton aria-label="Settings">
+                                    {copied ? <ClipboardCheck className={classes.icon} /> : <ClipboardTextOutline className={classes.icon} />}
+                                </IconButton>
+                            </Grid>
+                        </Grid>
+                    </CopyToClipboard>
+
                 }
                 title={props.title}
                 subheader={props.subheader}
