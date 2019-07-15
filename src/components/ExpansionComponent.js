@@ -71,23 +71,27 @@ export default function ControlledExpansionPanels(props) {
   //   }));
   // }
 
-  const info = {
-    "batch-size-textfield": props.onChangeBatchSize,
-    "num-categories-textfield": props.onChangeNumCategories,
-    "model-architecture-select": props.onSelectModelArchitecture,
-    "pretrained-switch": props.onSwitchPretrained,
-    "optimizer-select": props.onSelectOptimizer,
-    "out-width-textfield": props.onChangeOutWidth,
-    "out-height-textfield": props.onChangeOutHeight
-  }
+  // const info = {
+  //   "batchSize": props.onChangeBatchSize,
+  //   "numCategories": props.onChangeNumCategories,
+  //   "modelArchitecture": props.onSelectModelArchitecture,
+  //   "pretrained": props.onSwitchPretrained,
+  //   "optimizer": props.onSelectOptimizer,
+  //   "outWidth": props.onChangeOutWidth,
+  //   "outHeight": props.onChangeOutHeight
+  // }
 
-  const handleChange = () => event => {
-    info[event.target.name](event.target.value)
-  }
 
-  const handleSwitch = () => event => {
-    info[event.target.name](event.target.checked)
-  }
+
+
+
+  // const handleChange = () => event => {
+  //   info[event.target.name](event.target.value)
+  // }
+
+  // const handleSwitch = () => event => {
+  //   info[event.target.name](event.target.checked)
+  // }
 
   const handleExpand = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -117,9 +121,9 @@ export default function ControlledExpansionPanels(props) {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={props.pretrained}
-                    name="pretrained-switch"
-                    onChange={handleSwitch('name')}
+                    checked={props.values.pretrained}
+                    name="pretrained"
+                    onChange={props.handleOnSwitch}
                     color="primary"
                     inputProps={{ 'aria-label': 'primary checkbox' }}
                   />
@@ -132,9 +136,9 @@ export default function ControlledExpansionPanels(props) {
                   Model
                 </InputLabel>
                 <Select
-                  value={props.modelArchitecture}
-                  name="model-architecture-select"
-                  onChange={handleChange('name')}
+                  value={props.values.modelArchitecture}
+                  name="modelArchitecture"
+                  onChange={props.handleOnChange}
                   input={<OutlinedInput labelWidth={labelWidth} name="age" id="outlined-age-simple" />}
                 >
                   {modelArchitectures.map((model, index) => <MenuItem key={index} value={model}>{model}</MenuItem>)}
@@ -144,12 +148,11 @@ export default function ControlledExpansionPanels(props) {
           }
           {selectedTabs[0] === 1 &&
             <TextField
-              id="num-categories"
               label="Number of categories"
-              name="num-categories-textfield"
+              name="numCategories"
               className={classes.textField}
-              value={props.numCategories}
-              onChange={handleChange('name')}
+              value={props.values.numCategories}
+              onChange={props.handleOnChange}
               margin="normal"
               variant="outlined"
             />
@@ -158,18 +161,19 @@ export default function ControlledExpansionPanels(props) {
             <div>
               <TextField
                 label="Output Height"
+                name="outHeight"
                 className={classes.textField}
-                value={props.outHeight}
-                onChange={handleChange('name')}
+                value={props.values.outHeight}
+                onChange={props.handleOnChange}
                 margin="normal"
                 variant="outlined"
               />
               <TextField
                 label="Output Width"
+                name="outWidth"
                 className={classes.textField}
-                value={props.outWidth}
-                name="out-width-textfield"
-                onChange={handleChange('name')}
+                value={props.values.outWidth}
+                onChange={props.handleOnChange}
                 margin="normal"
                 variant="outlined"
               />
@@ -193,10 +197,10 @@ export default function ControlledExpansionPanels(props) {
           {selectedTabs[1] == 0 &&
             <TextField
               label="Batch Size"
-              name="batch-size-textfield"
+              name="batchSize"
               className={classes.textField}
-              value={props.batchSize}
-              onChange={handleChange('name')}
+              value={props.values.batchSize}
+              onChange={props.handleOnChange}
               margin="normal"
               variant="outlined"
             />
@@ -207,9 +211,9 @@ export default function ControlledExpansionPanels(props) {
                 Model
             </InputLabel>
               <Select
-                value={props.optimizer}
-                name="optimizer-select"
-                onChange={handleChange('name')}
+                value={props.values.optimizer}
+                name="optimizer"
+                onChange={props.handleOnChange}
                 input={<OutlinedInput labelWidth={labelWidth} name="age" id="outlined-age-simple" />}
               >
                 {optimizers.map((optimizer, index) => <MenuItem key={index} value={optimizer}>{optimizer}</MenuItem>)}
