@@ -166,17 +166,11 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
   }
 
   function isLastStep() {
-    return parseInt(props.match.params.id) === totalSteps() - 1
+    return parseInt(props.match.params.id) === totalSteps()
   }
 
   function handleNext() {
-    const newActiveStep =
-      isLastStep() && !allStepsCompleted()
-        ?
-        steps.findIndex((step, i) => !completed.has(i))
-        : parseInt(props.match.params.id) + 1
-
-    nextPath(`/steps/${newActiveStep}`)
+    nextPath(`/steps/${(parseInt(props.match.params.id) % totalSteps()) + 1}`)
   }
 
   function handleBack() {
@@ -193,7 +187,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 
   function handleComplete() {
     const newCompleted = new Set(completed)
-    newCompleted.add(parseInt(props.match.params.id))
+    newCompleted.add(parseInt(props.match.params.id) - 1)
     setCompleted(newCompleted)
 
     if (completed.size !== totalSteps() - skippedSteps()) {
@@ -221,7 +215,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
       alignItems="stretch"
     >
       <Grid item>
-        <Stepper alternativeLabel nonLinear activeStep={parseInt(props.match.params.id)}>
+        <Stepper alternativeLabel nonLinear activeStep={parseInt(props.match.params.id) - 1}>
           {steps.map((data, index) => {
             const stepProps = {}
             const buttonProps = {}
@@ -230,8 +224,8 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 
               <Step key={data.stepperTitle} {...stepProps}>
                 <StepButton
-                  onClick={handleStep(index)}
-                  completed={isStepComplete(index)}
+                  onClick={handleStep(index + 1)}
+                  completed={isStepComplete(index + 1)}
                   {...buttonProps}
                 >
                   {data.stepperTitle}
@@ -243,8 +237,8 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
         </Stepper>
       </Grid>
 
-      <Typography variant="h3" component="h2">{steps[parseInt(props.match.params.id)].header}</Typography>
-      <Typography variant="h5" component="h4">{steps[parseInt(props.match.params.id)].description}</Typography>
+      <Typography variant="h3" component="h2">{steps[parseInt(props.match.params.id) - 1].header}</Typography>
+      <Typography variant="h5" component="h4">{steps[parseInt(props.match.params.id) - 1].description}</Typography>
 
       <Grid
         container
@@ -252,10 +246,10 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
         justify="space-between"
         alignItems="center"
       >
-        {steps[parseInt(props.match.params.id)].content}
+        {steps[parseInt(props.match.params.id) - 1].content}
 
         <div>
-          <Button disabled={parseInt(props.match.params.id) === 0} onClick={handleBack} className={classes.button}>
+          <Button disabled={parseInt(props.match.params.id) - 1 === 0} onClick={handleBack} className={classes.button}>
             Back
                 </Button>
           <Button
@@ -266,7 +260,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
           >
             Next
             </Button>
-          {steps[parseInt(props.match.params.id)].action}
+          {steps[parseInt(props.match.params.id) - 1].action}
         </div>
       </Grid>
 
