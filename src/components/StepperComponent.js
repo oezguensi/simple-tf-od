@@ -13,7 +13,6 @@ import ControlledExpansionPanels from './ExpansionComponent'
 import CreateTFRecord from './CreateTFRecordComponent'
 import CodeSnippetCard from './CardComponent'
 
-
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -31,7 +30,12 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
+  link: {
+    textDecoration: "none"
+  }
 }))
+
+
 
 const pascalVOCExample = `<annotation>
 	<folder>my_folder</folder>
@@ -102,9 +106,8 @@ To assign the categories/labels of the bounding boxes in the annotation files, t
 This mapping follows a specific structure resembling json. The file is saved with the .pbtxt extension.
 `
 
-export default function HorizontalNonLinearAlternativeLabelStepper() {
+export default function HorizontalNonLinearAlternativeLabelStepper(props) {
   const classes = useStyles()
-  const [activeStep, setActiveStep] = React.useState(0)
   const [completed, setCompleted] = React.useState(new Set())
   const [skipped, setSkipped] = React.useState(new Set())
   const [labelMapCategories, setLabelMapCategories] = React.useState([])
@@ -163,7 +166,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper() {
   }
 
   function isLastStep() {
-    return activeStep === totalSteps() - 1
+    return parseInt(props.match.params.id) === totalSteps() - 1
   }
 
   function handleNext() {
@@ -171,22 +174,26 @@ export default function HorizontalNonLinearAlternativeLabelStepper() {
       isLastStep() && !allStepsCompleted()
         ?
         steps.findIndex((step, i) => !completed.has(i))
-        : activeStep + 1
+        : parseInt(props.match.params.id) + 1
 
-    setActiveStep(newActiveStep)
+    nextPath(`/steps/${newActiveStep}`)
   }
 
   function handleBack() {
-    setActiveStep(prevActiveStep => prevActiveStep - 1)
+    nextPath(`/steps/${parseInt(props.match.params.id) - 1}`)
+  }
+
+  function nextPath(path) {
+    props.history.push(path);
   }
 
   const handleStep = step => () => {
-    setActiveStep(step)
+    nextPath(`/steps/${step}`)
   }
 
   function handleComplete() {
     const newCompleted = new Set(completed)
-    newCompleted.add(activeStep)
+    newCompleted.add(parseInt(props.match.params.id))
     setCompleted(newCompleted)
 
     if (completed.size !== totalSteps() - skippedSteps()) {
@@ -195,7 +202,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper() {
   }
 
   function handleReset() {
-    setActiveStep(0)
+    nextPath(`/steps/0`)
     setCompleted(new Set())
     setSkipped(new Set())
   }
@@ -204,8 +211,8 @@ export default function HorizontalNonLinearAlternativeLabelStepper() {
     return completed.has(step)
   }
 
+ 
   return (
-
     <Grid
       className={classes.root}
       container
@@ -214,12 +221,13 @@ export default function HorizontalNonLinearAlternativeLabelStepper() {
       alignItems="stretch"
     >
       <Grid item>
-        <Stepper alternativeLabel nonLinear activeStep={activeStep}>
+        <Stepper alternativeLabel nonLinear activeStep={parseInt(props.match.params.id)}>
           {steps.map((data, index) => {
             const stepProps = {}
             const buttonProps = {}
 
             return (
+
               <Step key={data.stepperTitle} {...stepProps}>
                 <StepButton
                   onClick={handleStep(index)}
@@ -229,13 +237,14 @@ export default function HorizontalNonLinearAlternativeLabelStepper() {
                   {data.stepperTitle}
                 </StepButton>
               </Step>
+
             )
           })}
         </Stepper>
       </Grid>
 
-      <Typography variant="h3" component="h2">{steps[activeStep].header}</Typography>
-      <Typography variant="h5" component="h4">{steps[activeStep].description}</Typography>
+      <Typography variant="h3" component="h2">{steps[parseInt(props.match.params.id)].header}</Typography>
+      <Typography variant="h5" component="h4">{steps[parseInt(props.match.params.id)].description}</Typography>
 
       <Grid
         container
@@ -243,10 +252,10 @@ export default function HorizontalNonLinearAlternativeLabelStepper() {
         justify="space-between"
         alignItems="center"
       >
-        {steps[activeStep].content}
+        {steps[parseInt(props.match.params.id)].content}
 
         <div>
-          <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
+          <Button disabled={parseInt(props.match.params.id) === 0} onClick={handleBack} className={classes.button}>
             Back
                 </Button>
           <Button
@@ -257,7 +266,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper() {
           >
             Next
             </Button>
-          {steps[activeStep].action}
+          {steps[parseInt(props.match.params.id)].action}
         </div>
       </Grid>
 
