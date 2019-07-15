@@ -11,12 +11,32 @@ export default class CreateTFRecord extends React.Component {
       onComplete: props.onComplete,
       loading: false,
       progress: 0,
-      alertCompleted: false
+      alertCompleted: false,
+      disabled: props.disabled,
+      labelMapCategories: props.labelMapCategories,
     }
 
     this.startReadingChunkedResponse = this.startReadingChunkedResponse.bind(this)
     this.processChunks = this.processChunks.bind(this)
     this.onChunkedResponseComplete = this.onChunkedResponseComplete.bind(this)
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    let update = {}
+
+    if (props.disabled !== state.disabled) {
+      update.disabled = props.disabled
+    }
+
+    if (props.labelMapCategories !== state.labelMapCategories) {
+      update.labelMapCategories = props.labelMapCategories
+    }
+
+    return update
+  }
+
+  createLabelMap(labelMapCategories) {
+    return labelMapCategories.map((category, index) => `"${category}": ${index + 1}`).join(', ')
   }
 
   startReadingChunkedResponse(response) {
@@ -45,6 +65,7 @@ export default class CreateTFRecord extends React.Component {
   }
 
   handleOnClick() {
+    console.log(this.createLabelMap(this.state.labelMapCategories))
     this.setState({ loading: true })
 
     fetch('http://localhost:4000/posts', {
@@ -53,12 +74,13 @@ export default class CreateTFRecord extends React.Component {
       headers: {
         'Content-Type': 'application/json'
       },
+      
       body: JSON.stringify({
         filePath: '/Users/oezguensi/Code/Other\ Projects/simple-tf-od/server/custom_create_pascal_tf_record.py',
         flags: ['--data_set=train',
           '--imgs_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/data/imgs',
           '--annotations_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/data/annotations',
-          '--label_map_dict={"standard": 1, "security": 2, "motorsport": 3, "missing": 4}',
+          `--label_map_dict={${this.createLabelMap(this.state.labelMapCategories)}}`,
           '--out_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/records'],
       })
     }).then(this.startReadingChunkedResponse).then(this.onChunkedResponseComplete).catch(this.onChunkedResponseError)
@@ -77,7 +99,7 @@ export default class CreateTFRecord extends React.Component {
         (this.state.alertCompleted ? 
           <AlertDialogSlide onDialogClose={() => this.handleOnDialogClose()}/>
         :  
-          <Button variant="contained" color="primary" onClick={() => this.handleOnClick()}>
+          <Button disabled={this.state.disabled} variant="contained" color="primary" onClick={() => this.handleOnClick()}>
             Download
           </Button>
         )

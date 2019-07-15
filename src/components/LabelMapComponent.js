@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Chip from '@material-ui/core/Chip'
 import TextField from '@material-ui/core/TextField'
+import { POINT_CONVERSION_COMPRESSED } from 'constants';
 
 
 const useStyles = makeStyles(theme => ({
@@ -21,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-export default function ChipsArray() {
+export default function ChipsArray(props) {
 
     function useOutsideAlerter(ref) {
         function handleClickOutside(event) {
@@ -44,11 +45,13 @@ export default function ChipsArray() {
     const [chipData, setChipData] = React.useState([])
 
     const [selectedChip, setSelectedChip] = React.useState(null)
-    const [text, setText] = React.useState('Cat in the Hat')
+    const [text, setText] = React.useState('')
     const outsideExceptionIds = ["add-category"]
 
     const handleDelete = chipIndexToDelete => () => {
-        setChipData(chips => chips.filter((_, index) => index !== chipIndexToDelete))
+        let newChipData = chipData.filter((_, index) => index !== chipIndexToDelete)
+        setChipData(newChipData)
+        props.onChange(newChipData)
     }
 
     const handleChange = () => event => {
@@ -64,6 +67,9 @@ export default function ChipsArray() {
             newChipData = [...chipData, text]
         }
         setChipData(newChipData)
+        setText('')
+
+        props.onChange(newChipData)
     }
 
     const handleOnClick = (text, index) => () => {
@@ -79,7 +85,6 @@ export default function ChipsArray() {
                     label="New Category"
                     className={classes.textField}
                     value={text}
-                    placeholder="Placeholder"
                     onChange={handleChange('name')}
                     margin="normal"
                     variant="outlined"
@@ -90,7 +95,7 @@ export default function ChipsArray() {
                     <Chip
                         ref={index == selectedChip ? wrapperRef : null}
                         key={index}
-                        color={selectedChip == index ? "primary" : "secondary"}
+                        color={selectedChip == index ? "primary" : "default"}
                         label={text}
                         onClick={handleOnClick(text, index)}
                         onDelete={handleDelete(index)}

@@ -13,7 +13,7 @@ import CreateTFRecord from './CreateTFRecordComponent'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: '90%',
+    width: '100%',
   },
   button: {
     marginRight: theme.spacing(1),
@@ -36,11 +36,13 @@ export default function HorizontalNonLinearAlternativeLabelStepper() {
   const [activeStep, setActiveStep] = React.useState(0)
   const [completed, setCompleted] = React.useState(new Set())
   const [skipped, setSkipped] = React.useState(new Set())
+  const [labelMapCategories, setLabelMapCategories] = React.useState([])
+
   const steps = [{
     description: 'Create TensorFlow records',
     // content: <UploadAnnotations />,
-    content: <ChipsArray />,
-    action: <CreateTFRecord onComplete={handleComplete} />
+    content: <ChipsArray onChange={setLabelMapCategories}/>,
+    action: <CreateTFRecord labelMapCategories={labelMapCategories} disabled={labelMapCategories.length === 0} onComplete={handleComplete} />
   }, {
     description: 'Create train configuration file',
     content: <ControlledExpansionPanels />,
