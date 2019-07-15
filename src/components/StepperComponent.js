@@ -41,7 +41,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper() {
   const steps = [{
     description: 'Create TensorFlow records',
     // content: <UploadAnnotations />,
-    content: <ChipsArray onChange={setLabelMapCategories}/>,
+    content: <ChipsArray labelMapCategories={labelMapCategories} onChange={setLabelMapCategories}/>,
     action: <CreateTFRecord labelMapCategories={labelMapCategories} disabled={labelMapCategories.length === 0} onComplete={handleComplete} />
   }, {
     description: 'Create train configuration file',

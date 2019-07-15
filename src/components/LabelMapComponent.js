@@ -42,7 +42,7 @@ export default function ChipsArray(props) {
     useOutsideAlerter(wrapperRef)
 
     const classes = useStyles()
-    const [chipData, setChipData] = React.useState([])
+    const [chipData, setChipData] = React.useState(props.labelMapCategories)
 
     const [selectedChip, setSelectedChip] = React.useState(null)
     const [text, setText] = React.useState('')
