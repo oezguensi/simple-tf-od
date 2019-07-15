@@ -7,6 +7,9 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme, Divider } from '@material-ui/core';
 import red from '@material-ui/core/colors/red';
 
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+
+
 const theme = createMuiTheme({
   props: {
     MuiButtonBase: {
@@ -27,7 +30,10 @@ function App() {
     <div className="App">
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Home />
+        <Router>
+          <Route path="/" exact component={Home} />
+          <Route path="/steps/" component={HorizontalCustomStepper} />
+        </Router>
       </ThemeProvider>
     </div>
   );
