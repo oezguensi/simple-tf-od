@@ -7,16 +7,16 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField'
-import { FormControl, InputLabel, Select, OutlinedInput, MenuItem, Switch, FormControlLabel } from '@material-ui/core'
+import { FormControl, InputLabel, Select, OutlinedInput, MenuItem, Switch, FormControlLabel, Divider, Grid } from '@material-ui/core'
 
 import CenteredTabs from './TabsComponent'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: '100%',
+    minWidth: 900
   },
   heading: {
-    fontSize: theme.typography.pxToRem(15),
+    fontSize: theme.typography.pxToRem(20),
     flexBasis: '33.33%',
     flexShrink: 0,
   },
@@ -27,7 +27,12 @@ const useStyles = makeStyles(theme => ({
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-  }
+  },
+  formControl: {
+    marginTop: theme.spacing(2),
+    margin: theme.spacing(1),
+    minWidth: 250,
+  },
 }));
 
 const modelArchitectures = [
@@ -52,7 +57,7 @@ const optimizers = [
 export default function ControlledExpansionPanels(props) {
   const classes = useStyles();
   const inputLabel = React.useRef(null);
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = React.useState('panel1');
   const [selectedTabs, setSelectedTab] = React.useState([0, 0])
   const [labelWidth, setLabelWidth] = React.useState(0);
 
@@ -104,7 +109,7 @@ export default function ControlledExpansionPanels(props) {
   }
 
   return (
-    <Container maxWidth="md">
+    <Container fixed className={classes.root}>
       <ExpansionPanel expanded={expanded === 'panel1'} onChange={handleExpand('panel1')}>
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
@@ -114,71 +119,85 @@ export default function ControlledExpansionPanels(props) {
           <Typography className={classes.heading}>Single Shot Detector</Typography>
           <Typography className={classes.secondaryHeading}>Configure the settings of the SSD</Typography>
         </ExpansionPanelSummary>
+        {/* <Divider /> */}
         <ExpansionPanelDetails>
-          <CenteredTabs selectedTab={selectedTabs[0]} onTabChange={handleOnTabChange(0)} tabTitles={["Model Architecture", "Number of categories", "Output Shape"]} />
-          {selectedTabs[0] == 0 &&
-            <div>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={props.values.pretrained}
-                    name="pretrained"
-                    onChange={props.handleOnSwitch}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'primary checkbox' }}
-                  />
-                }
-                label="Pretrained"
-              />
+          <Grid
+            container
+            direction="column"
+            justify="flex-start"
+            alignItems="stretch"
+          >
+            <Grid item>
+              <CenteredTabs selectedTab={selectedTabs[0]} onTabChange={handleOnTabChange(0)} tabTitles={["Model Architecture", "Number of categories", "Output Shape"]} />
+            </Grid>
+            <Divider />
+            {selectedTabs[0] == 0 &&
+              <Grid item>
 
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel ref={inputLabel} htmlFor="outlined-age-simple">
-                  Model
-                </InputLabel>
-                <Select
-                  value={props.values.modelArchitecture}
-                  name="modelArchitecture"
+
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <InputLabel ref={inputLabel} htmlFor="outlined-age-simple">
+                    Model
+                  </InputLabel>
+                  <Select
+                    value={props.values.modelArchitecture}
+                    name="modelArchitecture"
+                    onChange={props.handleOnChange}
+                    input={<OutlinedInput labelWidth={labelWidth} name="age" id="outlined-age-simple" />}
+                  >
+                    {modelArchitectures.map((model, index) => <MenuItem key={index} value={model}>{model}</MenuItem>)}
+                  </Select>
+                </FormControl>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={props.values.pretrained}
+                      name="pretrained"
+                      onChange={props.handleOnSwitch}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'primary checkbox' }}
+                    />
+                  }
+                  label="Pretrained"
+                />
+              </Grid>
+            }
+            {selectedTabs[0] === 1 &&
+              <Grid item>
+                <TextField
+                  label="Number of categories"
+                  name="numCategories"
+                  className={classes.textField}
+                  value={props.values.numCategories}
                   onChange={props.handleOnChange}
-                  input={<OutlinedInput labelWidth={labelWidth} name="age" id="outlined-age-simple" />}
-                >
-                  {modelArchitectures.map((model, index) => <MenuItem key={index} value={model}>{model}</MenuItem>)}
-                </Select>
-              </FormControl>
-            </div>
-          }
-          {selectedTabs[0] === 1 &&
-            <TextField
-              label="Number of categories"
-              name="numCategories"
-              className={classes.textField}
-              value={props.values.numCategories}
-              onChange={props.handleOnChange}
-              margin="normal"
-              variant="outlined"
-            />
-          }
-          {selectedTabs[0] === 2 &&
-            <div>
-              <TextField
-                label="Output Height"
-                name="outHeight"
-                className={classes.textField}
-                value={props.values.outHeight}
-                onChange={props.handleOnChange}
-                margin="normal"
-                variant="outlined"
-              />
-              <TextField
-                label="Output Width"
-                name="outWidth"
-                className={classes.textField}
-                value={props.values.outWidth}
-                onChange={props.handleOnChange}
-                margin="normal"
-                variant="outlined"
-              />
-            </div>
-          }
+                  margin="normal"
+                  variant="outlined"
+                />
+              </Grid>
+            }
+            {selectedTabs[0] === 2 &&
+              <Grid item>
+                <TextField
+                  label="Output Height"
+                  name="outHeight"
+                  className={classes.textField}
+                  value={props.values.outHeight}
+                  onChange={props.handleOnChange}
+                  margin="normal"
+                  variant="outlined"
+                />
+                <TextField
+                  label="Output Width"
+                  name="outWidth"
+                  className={classes.textField}
+                  value={props.values.outWidth}
+                  onChange={props.handleOnChange}
+                  margin="normal"
+                  variant="outlined"
+                />
+              </Grid>
+            }
+          </Grid>
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel expanded={expanded === 'panel2'} onChange={handleExpand('panel2')}>

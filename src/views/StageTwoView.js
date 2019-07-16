@@ -213,23 +213,23 @@ export default function StageOneView(props) {
 
 
     const handleChange = (event) => {
-        setValues({...values, [event.target.name]: event.target.value})
+        setValues({ ...values, [event.target.name]: event.target.value })
     }
 
     const handleSwitch = (event) => {
-        setValues({...values, [event.target.name]: event.target.checked})
+        setValues({ ...values, [event.target.name]: event.target.checked })
     }
 
     return (
         <Grid
             container
-            direction="column"
+            direction="row"
             justify="center"
-            alignItems="center"
+            alignItems="flex-start"
         >
             <Grid item>
                 <CodeSnippetCard
-                    width={800}
+                    width={680}
                     height={750}
                     codeHeight={600}
                     title="Configuration for Training"
