@@ -21,7 +21,10 @@ export default function CreateConfigFileComponent(props) {
                 filePath: '/Users/oezguensi/Code/Other\ Projects/simple-tf-od/server/create_config.py',
                 flags: [`--text=${props.configText}`],
             })
-        }).then(setLoading(false))
+        }).then(() => {
+            setAlertCompleted(true)
+            setLoading(false)
+        }).catch(console.error)
     }
 
     const handleOnDialogClose = () => {

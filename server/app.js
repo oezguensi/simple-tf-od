@@ -2,6 +2,7 @@ const { PythonShell } = require("python-shell")
 const express = require('express')
 const app = express()
 const bodyParser = require("body-parser")
+const execSync = require('child_process').execSync
 
 
 app.use(function (req, res, next) {
@@ -84,6 +85,11 @@ app.post('/scripts/full', function (req, res, next) {
   next()
 })
 
+
+app.post('/shell', function (req, res, next) {
+  const output = execSync(req.body.command, { encoding: 'utf-8' });  // the default is 'buffer'
+  console.log('Output was:\n', output);
+})
 
 
 app.listen(4000, () => console.log('Application listening on port 4000!'))

@@ -15,6 +15,7 @@ import CreateConfigFileComponent from './CreateConfigFileComponent'
 import CodeSnippetCard from './CardComponent'
 import StageOneView from '../views/StageOneView'
 import StageTwoView from '../views/StageTwoView'
+import RunCommand from './RunCommandComponent'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -45,15 +46,6 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
   const [labelMapCategories, setLabelMapCategories] = React.useState([])
   const [configText, setConfigText] = React.useState("")
   
-  // const [modelArchitecture, setModelArchitecture] = React.useState("ssd_mobilenet_v1_coco")
-  // const [numCategories, setNumCategories] = React.useState(labelMapCategories.length)
-  // const [outWidth, setOutWidth] = React.useState(300)
-  // const [outHeight, setOutHeight] = React.useState(300)
-  // const [batchSize, setBatchSize] = React.useState(24)
-  // const [optimizer, setOptimizer] = React.useState("rms_prop_optimizer")
-  // const [pretrained, setPretrained] = React.useState(false)
-
-
   const steps = [{
     stepperTitle: 'Create TensorFlow records',
     // content: <UploadAnnotations />,
@@ -66,13 +58,13 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
     header: "h3. Heading",
     description: "h4. Heading",
     content: <StageTwoView numCategories={labelMapCategories.length} configText={configText} onChange={setConfigText}/>,
-    action: <CreateConfigFileComponent configText={configText}/>
+    action: <CreateConfigFileComponent configText={configText} onComplete={handleComplete}/>
   }, {
     stepperTitle: 'Start training',
     header: "h3. Heading",
     description: "h4. Heading",
     content: null,
-    action: <Button disabled={!allStepsCompleted()} className={classes.button}>Start Training</Button>
+    action: <RunCommand disabled={allStepsCompleted()} />
   }]
 
   function totalSteps() {
@@ -84,7 +76,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
   }
 
   function allStepsCompleted() {
-    return completed.has(0) && completed.has(1)
+    return completed.has(1) && completed.has(2)
   }
 
   function isLastStep() {
