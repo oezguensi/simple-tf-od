@@ -2,7 +2,7 @@ import React from 'react'
 import { Grid } from '@material-ui/core'
 
 import CodeSnippetCard from '../components/CardComponent'
-import ControlledExpansionPanels from '../components/ExpansionComponent'
+import ControlledExpansionPanels from '../components/ExpansionPanel/ExpansionComponent'
 
 const getConfig = (modelArchitecture, pretrained, numCategories, outWidth, outHeight, batchSize, optimizer) => {
     return `model {

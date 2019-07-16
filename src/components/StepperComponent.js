@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 
 import UploadAnnotations from './UploadAnnotationsComponent'
 import LabelMapChips from './LabelMapComponent'
-import ControlledExpansionPanels from './ExpansionComponent'
+import ControlledExpansionPanels from './ExpansionPanel/ExpansionComponent'
 import CreateTFRecord from './CreateTFRecordComponent'
 import CodeSnippetCard from './CardComponent'
 import StageOneView from '../views/StageOneView'
