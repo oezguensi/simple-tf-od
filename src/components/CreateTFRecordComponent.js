@@ -3,107 +3,78 @@ import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import AlertDialogSlide from './AlertComponent'
 
-export default class CreateTFRecord extends React.Component {
-  constructor(props) {
-    super(props)
+export default function CreateTFRecord(props) {
 
-    this.state = {
-      onComplete: props.onComplete,
-      loading: false,
-      progress: 0,
-      alertCompleted: false,
-      disabled: props.disabled,
-      labelMapCategories: props.labelMapCategories,
-    }
+	const [loading, setLoading] = React.useState(false)
+	const [alertCompleted, setAlertCompleted] = React.useState(false)
+	const [progress, setProgress] = React.useState(0)
 
-    this.startReadingChunkedResponse = this.startReadingChunkedResponse.bind(this)
-    this.processChunks = this.processChunks.bind(this)
-    this.onChunkedResponseComplete = this.onChunkedResponseComplete.bind(this)
-  }
+	const createLabelMap = (labelMapCategories) => {
+		return labelMapCategories.map((category, index) => `"${category}": ${index + 1}`).join(', ')
+	}
 
-  static getDerivedStateFromProps(props, state) {
-    let update = {}
+	const startReadingChunkedResponse = (response) => {
+		var reader = response.body.getReader()
+		return reader.read().then(result => processChunks(result, reader));
+	}
 
-    if (props.disabled !== state.disabled) {
-      update.disabled = props.disabled
-    }
+	const processChunks = (result, reader) => {
+		if (!result.done) {
+			setProgress(progress + 5)
+			return reader.read().then(result => processChunks(result, reader));
+		}
+	}
 
-    if (props.labelMapCategories !== state.labelMapCategories) {
-      update.labelMapCategories = props.labelMapCategories
-    }
+	const onChunkedResponseComplete = (result) => {
+		setProgress(100)
+		setTimeout(() => {
+			setLoading(false)
+			setAlertCompleted(true)
+			console.log('Finished process!', result)
+		}, 2000);
 
-    return update
-  }
+	}
 
-  createLabelMap(labelMapCategories) {
-    return labelMapCategories.map((category, index) => `"${category}": ${index + 1}`).join(', ')
-  }
+	const onChunkedResponseError = (err) => {
+		console.error(err)
+	}
 
-  startReadingChunkedResponse(response) {
-    var reader = response.body.getReader()
-    return reader.read().then(result => this.processChunks(result, reader));
-  }
+	const handleOnClick = () => {
+		console.log(createLabelMap(props.labelMapCategories))
+		setLoading(true)
 
-  processChunks(result, reader) {
-    if (!result.done) {
-      this.setState({progress: this.state.progress + 5})
-      return reader.read().then(result => this.processChunks(result, reader));
-    }
-  }
-  
-  onChunkedResponseComplete(result) {
-    this.setState({progress: 100})
-    setTimeout(() => { 
-      this.setState({loading: false, alertCompleted: true})
-      console.log('Finished process!', result)  
-    }, 2000);
-    
-  }
-  
-  onChunkedResponseError(err) {
-    console.error(err)
-  }
+		fetch('http://localhost:4000/scripts/chunked', {
+			method: 'POST',
+			mode: 'cors',
+			headers: {
+				'Content-Type': 'application/json'
+			},
 
-  handleOnClick() {
-    console.log(this.createLabelMap(this.state.labelMapCategories))
-    this.setState({ loading: true })
+			body: JSON.stringify({
+				filePath: '/Users/oezguensi/Code/Other\ Projects/simple-tf-od/server/custom_create_pascal_tf_record.py',
+				flags: ['--data_set=train',
+					'--imgs_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/data/imgs',
+					'--annotations_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/data/annotations',
+					`--label_map_dict={${this.createLabelMap(this.state.labelMapCategories)}}`,
+					'--out_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/records'],
+			})
+		}).then(startReadingChunkedResponse).then(onChunkedResponseComplete).catch(onChunkedResponseError)
+	}
 
-    fetch('http://localhost:4000/scripts/chunked', {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      
-      body: JSON.stringify({
-        filePath: '/Users/oezguensi/Code/Other\ Projects/simple-tf-od/server/custom_create_pascal_tf_record.py',
-        flags: ['--data_set=train',
-          '--imgs_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/data/imgs',
-          '--annotations_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/data/annotations',
-          `--label_map_dict={${this.createLabelMap(this.state.labelMapCategories)}}`,
-          '--out_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/records'],
-      })
-    }).then(this.startReadingChunkedResponse).then(this.onChunkedResponseComplete).catch(this.onChunkedResponseError)
-  }
+	const handleOnDialogClose = () => {
+		setAlertCompleted(false)
+		props.onComplete()
+	}
 
-  handleOnDialogClose() {
-    this.setState({alertCompleted: false})
-    this.state.onComplete()
-  }
-
-  render() {
-    return (
-      (this.state.loading ?
-        <CircularProgress variant="static" value={this.state.progress} />
-        :
-        (this.state.alertCompleted ? 
-          <AlertDialogSlide onDialogClose={() => this.handleOnDialogClose()}/>
-        :  
-          <Button disabled={this.state.disabled} variant="contained" color="primary" onClick={() => this.handleOnClick()}>
-            Download
-          </Button>
-        )
-      )
-    )
-  }
+	return (
+		(loading ?
+			<CircularProgress variant="static" value={progress} />
+			:
+			(alertCompleted ?
+				<AlertDialogSlide onDialogClose={handleOnDialogClose} />
+				:
+				<Button disabled={props.disabled} variant="contained" color="primary" onClick={handleOnClick}>Download</Button>
+			)
+		)
+	)
 }
