@@ -33,7 +33,7 @@ export default function RunCommand(props) {
 				<AlertDialogSlide onDialogClose={handleOnDialogClose} />
 				:
 				<Button disabled={props.disabled} variant="contained" color="primary" onClick={handleOnClick}>
-					Download
+					Start training
 		  </Button>
 			)
 		)
