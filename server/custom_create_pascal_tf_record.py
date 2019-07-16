@@ -134,7 +134,7 @@ def main():
           if (((idx + 1) // len(annotation_files)) * 100) % 5 == 0:
               print('Loaded {} percent of annotations'.format(((idx + 1) // len(annotation_files)) * 100))
 
-          for i in range(100000):
+          for i in range(10000):
             i * 2
 
           with tf.gfile.GFile(annotation_file, 'r') as fid:

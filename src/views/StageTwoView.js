@@ -5,7 +5,7 @@ import CodeSnippetCard from '../components/CardComponent'
 import ControlledExpansionPanels from '../components/ExpansionPanel/ExpansionComponent'
 
 const getConfig = (modelArchitecture, pretrained, numCategories, outWidth, outHeight, batchSize, optimizer) => {
-    return `model {
+	return `model {
     ssd {
       num_classes: ${numCategories}
       box_coder {
@@ -155,11 +155,11 @@ const getConfig = (modelArchitecture, pretrained, numCategories, outWidth, outHe
       }
     }
     ${pretrained ?
-            `
+			`
     fine_tune_checkpoint: "PATH_TO_BE_CONFIGURED/model.ckpt"
     fine_tune_checkpoint_type:  "detection"
     `
-            : ``}
+			: ``}
     # Note: The below line limits the training process to 200K steps, which we
     # empirically found to be sufficient enough to train the pets dataset. This
     # effectively bypasses the learning rate schedule (the learning rate will
@@ -200,52 +200,56 @@ const getConfig = (modelArchitecture, pretrained, numCategories, outWidth, outHe
   `
 }
 
-export default function StageOneView(props) {
-    const [values, setValues] = React.useState({
-        batchSize: 24,
-        numCategories: props.numCategories,
-        modelArchitecture: "ssd_mobilenet_v1_coco",
-        pretrained: true,
-        optimizer: "rms_prop_optimizer",
-        outHeight: 300,
-        outWidth: 300,
-    })
+export default function StageTwoView(props) {
+	const [values, setValues] = React.useState({
+		batchSize: 24,
+		numCategories: props.numCategories,
+		modelArchitecture: "ssd_mobilenet_v1_coco",
+		pretrained: true,
+		optimizer: "rms_prop_optimizer",
+		outHeight: 300,
+		outWidth: 300,
+	})
+	props.onChange(getConfig(values.modelArchitecture, values.pretrained, values.numCategories, values.outWidth, values.outHeight, values.batchSize, values.optimizer))
 
+	const handleChange = (event) => {
+		const newValues = { ...values, [event.target.name]: event.target.value }
+		props.onChange(getConfig(newValues.modelArchitecture, newValues.pretrained, newValues.numCategories, newValues.outWidth, newValues.outHeight, newValues.batchSize, newValues.optimizer))
+		setValues(newValues)
+	}
 
-    const handleChange = (event) => {
-        setValues({ ...values, [event.target.name]: event.target.value })
-    }
+	const handleSwitch = (event) => {
+		const newValues = { ...values, [event.target.name]: event.target.checked }
+		props.onChange(getConfig(newValues.modelArchitecture, newValues.pretrained, newValues.numCategories, newValues.outWidth, newValues.outHeight, newValues.batchSize, newValues.optimizer))
+		setValues(newValues)
+	}
 
-    const handleSwitch = (event) => {
-        setValues({ ...values, [event.target.name]: event.target.checked })
-    }
-
-    return (
-        <Grid
-            container
-            direction="row"
-            justify="center"
-            alignItems="flex-start"
-        >
-            <Grid item>
-                <CodeSnippetCard
-                    width={680}
-                    height={750}
-                    codeHeight={600}
-                    title="Configuration for Training"
-                    subheader="JSON Format"
-                    language="json"
-                    code={getConfig(values.modelArchitecture, values.pretrained, values.numCategories, values.outWidth, values.outHeight, values.batchSize, values.optimizer)}
-                    description={"balaalskdnflas"}
-                />
-            </Grid>
-            <Grid item>
-                <ControlledExpansionPanels
-                    values={values}
-                    handleOnChange={handleChange}
-                    handleOnSwitch={handleSwitch}
-                />
-            </Grid>
-        </Grid>
-    )
+	return (
+		<Grid
+			container
+			direction="row"
+			justify="center"
+			alignItems="flex-start"
+		>
+			<Grid item>
+				<CodeSnippetCard
+					width={680}
+					height={750}
+					codeHeight={600}
+					title="Configuration for Training"
+					subheader="JSON Format"
+					language="json"
+					code={props.configText}
+					description={"balaalskdnflas"}
+				/>
+			</Grid>
+			<Grid item>
+				<ControlledExpansionPanels
+					values={values}
+					handleOnChange={handleChange}
+					handleOnSwitch={handleSwitch}
+				/>
+			</Grid>
+		</Grid>
+	)
 }

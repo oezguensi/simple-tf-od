@@ -68,7 +68,7 @@ export default class CreateTFRecord extends React.Component {
     console.log(this.createLabelMap(this.state.labelMapCategories))
     this.setState({ loading: true })
 
-    fetch('http://localhost:4000/posts', {
+    fetch('http://localhost:4000/scripts/chunked', {
       method: 'POST',
       mode: 'cors',
       headers: {

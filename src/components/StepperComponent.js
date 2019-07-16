@@ -11,6 +11,7 @@ import UploadAnnotations from './UploadAnnotationsComponent'
 import LabelMapChips from './LabelMapComponent'
 import ControlledExpansionPanels from './ExpansionPanel/ExpansionComponent'
 import CreateTFRecord from './CreateTFRecordComponent'
+import CreateConfigFileComponent from './CreateConfigFileComponent'
 import CodeSnippetCard from './CardComponent'
 import StageOneView from '../views/StageOneView'
 import StageTwoView from '../views/StageTwoView'
@@ -42,14 +43,16 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
   const [completed, setCompleted] = React.useState(new Set())
   const [skipped, setSkipped] = React.useState(new Set())
   const [labelMapCategories, setLabelMapCategories] = React.useState([])
+  const [configText, setConfigText] = React.useState("")
   
-  const [modelArchitecture, setModelArchitecture] = React.useState("ssd_mobilenet_v1_coco")
-  const [numCategories, setNumCategories] = React.useState(labelMapCategories.length)
-  const [outWidth, setOutWidth] = React.useState(300)
-  const [outHeight, setOutHeight] = React.useState(300)
-  const [batchSize, setBatchSize] = React.useState(24)
-  const [optimizer, setOptimizer] = React.useState("rms_prop_optimizer")
-  const [pretrained, setPretrained] = React.useState(false)
+  // const [modelArchitecture, setModelArchitecture] = React.useState("ssd_mobilenet_v1_coco")
+  // const [numCategories, setNumCategories] = React.useState(labelMapCategories.length)
+  // const [outWidth, setOutWidth] = React.useState(300)
+  // const [outHeight, setOutHeight] = React.useState(300)
+  // const [batchSize, setBatchSize] = React.useState(24)
+  // const [optimizer, setOptimizer] = React.useState("rms_prop_optimizer")
+  // const [pretrained, setPretrained] = React.useState(false)
+
 
   const steps = [{
     stepperTitle: 'Create TensorFlow records',
@@ -62,8 +65,8 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
     stepperTitle: 'Create train configuration file',
     header: "h3. Heading",
     description: "h4. Heading",
-    content: <StageTwoView numCategories={labelMapCategories.length}/>,
-    action: <Button onClick={handleComplete} className={classes.button}>Complete</Button>
+    content: <StageTwoView numCategories={labelMapCategories.length} configText={configText} onChange={setConfigText}/>,
+    action: <CreateConfigFileComponent configText={configText}/>
   }, {
     stepperTitle: 'Start training',
     header: "h3. Heading",
