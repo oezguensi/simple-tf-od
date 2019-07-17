@@ -1,9 +1,23 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { CircularProgress, Button, Zoom, Fab } from '@material-ui/core'
 import AlertDialogSlide from './AlertComponent'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { Download } from 'mdi-material-ui'
+
+const useStyles = makeStyles(theme => ({
+	fab: {
+		position: 'absolute',
+		bottom: theme.spacing(5),
+		right: theme.spacing(7),
+	},
+	extendedIcon: {
+		marginRight: theme.spacing(1),
+	},
+}))
 
 export default function CreateTFRecord(props) {
+	const classes = useStyles()
+	const theme = useTheme()
 
 	const [loading, setLoading] = React.useState(false)
 	const [alertCompleted, setAlertCompleted] = React.useState(false)
@@ -55,7 +69,7 @@ export default function CreateTFRecord(props) {
 				flags: ['--data_set=train',
 					'--imgs_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/data/imgs',
 					'--annotations_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/data/annotations',
-					`--label_map_dict={${this.createLabelMap(this.state.labelMapCategories)}}`,
+					`--label_map_dict={${createLabelMap(props.labelMapCategories)}}`,
 					'--out_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/records'],
 			})
 		}).then(startReadingChunkedResponse).then(onChunkedResponseComplete).catch(onChunkedResponseError)
@@ -73,7 +87,27 @@ export default function CreateTFRecord(props) {
 			(alertCompleted ?
 				<AlertDialogSlide onDialogClose={handleOnDialogClose} />
 				:
-				<Button disabled={props.disabled} variant="contained" color="primary" onClick={handleOnClick}>Download</Button>
+				// <Button disabled={props.disabled} variant="contained" color="primary" onClick={handleOnClick}>Download</Button>
+				<Zoom
+					in={parseInt(props.match.params.id) - 1 === props.index}
+					timeout={props.transitionDuration}
+					style={{
+						transitionDelay: `${parseInt(props.match.params.id) - 1 === props.index ? props.transitionDuration.exit : 0}ms`,
+					}}
+					unmountOnExit
+				>
+					<Fab
+						onClick={handleOnClick}
+						disabled={props.disabled}
+						aria-label="Download"
+						className={classes.fab}
+						color={'primary'}
+						variant="extended"
+					>
+						<Download className={classes.extendedIcon} />
+						Download
+					</Fab>
+				</Zoom>
 			)
 		)
 	)

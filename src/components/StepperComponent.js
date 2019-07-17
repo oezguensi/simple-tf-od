@@ -58,12 +58,17 @@ const useStyles = makeStyles(theme => ({
 
 export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 	const classes = useStyles()
-	const theme = useTheme();
+	const theme = useTheme()
 
 	const [completed, setCompleted] = React.useState(new Set())
 	const [skipped, setSkipped] = React.useState(new Set())
 	const [labelMapCategories, setLabelMapCategories] = React.useState([])
 	const [configText, setConfigText] = React.useState("")
+
+	const transitionDuration = {
+		enter: theme.transitions.duration.enteringScreen,
+		exit: theme.transitions.duration.leavingScreen,
+	}
 
 	const steps = [{
 		stepperTitle: 'Create TensorFlow records',
@@ -71,7 +76,14 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 		header: "h3. Heading",
 		description: "h4. Heading",
 		content: <StageOneView labelMapCategories={labelMapCategories} onChange={setLabelMapCategories} />,
-		action: <CreateTFRecord labelMapCategories={labelMapCategories} disabled={labelMapCategories.length === 0} onComplete={handleComplete} />
+		action: <CreateTFRecord
+			index={0}
+			match={props.match}
+			transitionDuration={transitionDuration}
+			labelMapCategories={labelMapCategories}
+			disabled={labelMapCategories.length === 0}
+			onComplete={handleComplete}
+		/>
 	}, {
 		stepperTitle: 'Create train configuration file',
 		header: "h3. Heading",
@@ -87,10 +99,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 	}]
 
 
-	const transitionDuration = {
-		enter: theme.transitions.duration.enteringScreen,
-		exit: theme.transitions.duration.leavingScreen,
-	};
+	
 
 	const fabs = [
 		{
@@ -214,7 +223,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 
 
 
-				{fabs.map((fab, index) => (
+				{/* {fabs.map((fab, index) => (
 					<Zoom
 						key={index}
 						in={parseInt(props.match.params.id) - 1 === index}
@@ -229,7 +238,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 							{fab.label}
 						</Fab>
 					</Zoom>
-				))}
+				))} */}
 
 				<div>
 					<Button disabled={parseInt(props.match.params.id) - 1 === 0} onClick={handleBack} className={classes.button}>
