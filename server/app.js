@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const bodyParser = require("body-parser")
 const execSync = require('child_process').execSync
+const { spawn } = require('child_process')
 
 
 app.use(function (req, res, next) {
@@ -39,13 +40,13 @@ app.post('/scripts/chunked', function (req, res, next) {
       console.log(message)
       res.write(message)
       res.flush()
-      
+
     }
   })
 
   pyShell.end(function (err, code) {
     if (err) {
-      res.end(Error(`An error occured when runnig python script: ${err}`)) 
+      res.end(Error(`An error occured when runnig python script: ${err}`))
     } else {
       res.end('Finished running python script!')
     }
@@ -76,7 +77,7 @@ app.post('/scripts/full', function (req, res, next) {
 
   pyShell.end(function (err, code) {
     if (err) {
-      res.end(Error(`An error occured when runnig python script: ${err}`)) 
+      res.end(Error(`An error occured when runnig python script: ${err}`))
     } else {
       res.end('Finished running python script!')
     }
@@ -86,9 +87,41 @@ app.post('/scripts/full', function (req, res, next) {
 })
 
 
+// app.post('/shell', function (req, res, next) {
+//   const output = execSync(req.body.command, { encoding: 'utf-8' });  // the default is 'buffer'
+//   console.log('Output was:\n', output);
+// })
+
+
+// const startReadingChunkedResponse = (response) => {
+//   var reader = response.body.getReader()
+//   return reader.read().then(result => processChunks(result, reader));
+// }
+
+// const processChunks = (result, reader) => {
+//   if (!result.done) {
+//     setProgress(progress + 5)
+//     return reader.read().then(result => processChunks(result, reader));
+//   }
+// }
+
+
+
 app.post('/shell', function (req, res, next) {
-  const output = execSync(req.body.command, { encoding: 'utf-8' });  // the default is 'buffer'
-  console.log('Output was:\n', output);
+  const child = spawn('cd ..')
+  // use child.stdout.setEncoding('utf8'); if you want text chunks
+  child.stdout.setEncoding('utf8')
+  child.stdout.on('data', (chunk) => {
+    console.log(chunk)
+  })
+
+  // since these are streams, you can pipe them elsewhere
+  // child.stderr.pipe(dest);
+
+  child.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
+  })
+
 })
 
 

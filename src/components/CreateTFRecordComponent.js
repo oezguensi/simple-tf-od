@@ -46,7 +46,6 @@ export default function CreateTFRecord(props) {
 			setAlertCompleted(true)
 			console.log('Finished process!', result)
 		}, 2000);
-
 	}
 
 	const onChunkedResponseError = (err) => {
