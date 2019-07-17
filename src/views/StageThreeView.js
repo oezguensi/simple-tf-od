@@ -4,39 +4,21 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import CodeSnippetCard from '../components/CardComponent'
 
-const treeStructure = `
-.
-├── data
-├── node_modules
-├── outputs
-├── public
-├── records
-├── servere
-└── src
+
+const commandsText = `
+$ git clone https://github.com/tensorflow/models.git
+$ protoc object_detection/protos/*.proto --python_out=.
+$ export PYTHONPATH=$PYTHONPATH:\`pwd\`:\`pwd\`/slim
+$ export CUDA_VISIBLE_DEVICES=x
+$ python legacy/train.py 
+    --logtostderr 
+    --train_dir=training 
+    --pipeline_config_path=training/train_config.config > logs 2>&1 &
 `
 
-const treeStructureDescription = `
-To assign the categories/labels of the bounding boxes in the annotation files, the TF OD APIs script needs a mapping. 
-This mapping follows a specific structure resembling json. The file is saved with the .pbtxt extension.
-`
-
-const labelMapExample = `
-$ echo $EDITOR
-vim
-$ git checkout master
-Switched to branch 'master'
-Your branch is up-to-date with 'origin/master'.
-$ git push
-Everything up-to-date
-$ echo 'All
-> done!'
-All
-done!
-  `
-
-const labelMapDescription = `
-To assign the categories/labels of the bounding boxes in the annotation files, the TF OD APIs script needs a mapping. 
-This mapping follows a specific structure resembling json. The file is saved with the .pbtxt extension.
+const commandsDescription = `
+Finally we can start training the Object Detector. For that it is necessary to run a couple commands in the terminal. 
+By clicking on the button these commands will be executed as a child process.
 `
 
 
@@ -57,12 +39,13 @@ export default function StageThreeView(props) {
             alignItems="center"
             spacing={10}
         >
-            <Grid item>
-                <CodeSnippetCard width={500} height={600} codeHeight={350} title="Folder structure" subheader="Verify the folder structure" language="shell-session" code={treeStructure} description={treeStructureDescription} />
+            <Grid item xs={12} sm={6}>
+                <CodeSnippetCard height={600} title="Shell commands" subheader="Need to be executed succesively" language="shell-session" code={commandsText} description={commandsDescription} copy={true}/>
             </Grid>
-            <Grid item>
-                <CodeSnippetCard width={500} height={600} codeHeight={350} title="Shell commands" subheader="Need to be executed succesively" language="shell-session" code={labelMapExample} description={labelMapDescription} />
+            <Grid item xs={12} sm={6}>
+                <CodeSnippetCard height={600} title="Output" language="shell-session" code={""}/>
             </Grid>
+
         </Grid>
     )
 }

@@ -94,8 +94,12 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 			index={2}
 			match={props.match}
 			transitionDuration={transitionDuration}
-			disabled={!allStepsCompleted()}
+			// disabled={!allStepsCompleted()}
+			disabled={false}
 			onComplete={handleComplete}
+			commands={[
+				{ command: 'git', flags: ['clone', 'https://github.com/tensorflow/models.git'] }
+			]}
 		/>
 	}]
 
@@ -181,8 +185,8 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 				</Stepper>
 			</Grid>
 
-			<Typography variant="h3" component="h2">{steps[parseInt(props.match.params.id) - 1].header}</Typography>
-			<Typography variant="h5" component="h4">{steps[parseInt(props.match.params.id) - 1].description}</Typography>
+			{/* <Typography variant="h3" component="h2">{steps[parseInt(props.match.params.id) - 1].header}</Typography>
+			<Typography variant="h5" component="h4">{steps[parseInt(props.match.params.id) - 1].description}</Typography> */}
 
 			<Grid
 				container

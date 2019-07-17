@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Chip from '@material-ui/core/Chip'
+import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
 import { POINT_CONVERSION_COMPRESSED } from 'constants';
 
@@ -12,6 +13,7 @@ const useStyles = makeStyles(theme => ({
         flexWrap: 'wrap',
         padding: theme.spacing(0.5),
     },
+
     chip: {
         margin: theme.spacing(0.5),
     },
@@ -75,7 +77,17 @@ export default function LabelMapChips(props) {
     }
 
     return (
-        <div className={classes.root}>
+        <Grid
+            container
+            item
+            xs={12}
+            sm={12}
+            md={4}
+            direction="column"
+            justify="center"
+            alignItems="center"
+
+        >
             <form onSubmit={handleOnSubmit} noValidate autoComplete="off">
                 <TextField
                     id="add-category"
@@ -87,19 +99,22 @@ export default function LabelMapChips(props) {
                     variant="outlined"
                 />
             </form>
-            {props.labelMapCategories.map((text, index) => {
-                return (
-                    <Chip
-                        ref={index == selectedChip ? wrapperRef : null}
-                        key={index}
-                        color={selectedChip == index ? "primary" : "default"}
-                        label={text}
-                        onClick={handleOnClick(text, index)}
-                        onDelete={handleDelete(index)}
-                        className={classes.chip}
-                    />
-                )
-            })}
-        </div>
+            <div className={classes.root}>
+
+                {props.labelMapCategories.map((text, index) => {
+                    return (
+                        <Chip
+                            ref={index == selectedChip ? wrapperRef : null}
+                            color={selectedChip == index ? "primary" : "default"}
+                            label={text}
+                            onClick={handleOnClick(text, index)}
+                            onDelete={handleDelete(index)}
+                            className={classes.chip}
+                        />
+                    )
+                })}
+
+            </div>
+        </Grid>
     )
 }

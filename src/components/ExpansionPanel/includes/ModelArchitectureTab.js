@@ -25,9 +25,15 @@ const modelArchitectures = [
 
 export default function ModelArchitectureTab(props) {
     const classes = useStyles()
-    
+
     return (
-        <Grid item>
+        <Grid
+            item
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+        >
             <FormControl variant="outlined" className={classes.formControl}>
                 <InputLabel ref={props.inputLabel} htmlFor="outlined-age-simple">
                     Model

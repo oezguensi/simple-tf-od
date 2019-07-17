@@ -1,11 +1,11 @@
 import React from 'react'
 import { Grid } from '@material-ui/core'
-
+import { makeStyles } from '@material-ui/core/styles'
 import CodeSnippetCard from '../components/CardComponent'
 import ControlledExpansionPanels from '../components/ExpansionPanel/ExpansionComponent'
 
 const getConfig = (modelArchitecture, pretrained, numCategories, outWidth, outHeight, batchSize, optimizer) => {
-	return `model {
+  return `model {
     ssd {
       num_classes: ${numCategories}
       box_coder {
@@ -155,11 +155,11 @@ const getConfig = (modelArchitecture, pretrained, numCategories, outWidth, outHe
       }
     }
     ${pretrained ?
-			`
+      `
     fine_tune_checkpoint: "PATH_TO_BE_CONFIGURED/model.ckpt"
     fine_tune_checkpoint_type:  "detection"
     `
-			: ``}
+      : ``}
     # Note: The below line limits the training process to 200K steps, which we
     # empirically found to be sufficient enough to train the pets dataset. This
     # effectively bypasses the learning rate schedule (the learning rate will
@@ -200,56 +200,67 @@ const getConfig = (modelArchitecture, pretrained, numCategories, outWidth, outHe
   `
 }
 
+const configDescription = `
+  The configuration files encompasses all information necessary to train the Object Detection model.
+  To set up and download the .config file please adjust the settings on the right accordingly.
+`
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    width: '100%',
+  },
+}))
+
 export default function StageTwoView(props) {
-	const [values, setValues] = React.useState({
-		batchSize: 24,
-		numCategories: props.numCategories,
-		modelArchitecture: "ssd_mobilenet_v1_coco",
-		pretrained: true,
-		optimizer: "rms_prop_optimizer",
-		outHeight: 300,
-		outWidth: 300,
-	})
-	props.onChange(getConfig(values.modelArchitecture, values.pretrained, values.numCategories, values.outWidth, values.outHeight, values.batchSize, values.optimizer))
+  const classes = useStyles()
+  const [values, setValues] = React.useState({
+    batchSize: 24,
+    numCategories: props.numCategories,
+    modelArchitecture: "ssd_mobilenet_v1_coco",
+    pretrained: true,
+    optimizer: "rms_prop_optimizer",
+    outHeight: 300,
+    outWidth: 300,
+  })
+  props.onChange(getConfig(values.modelArchitecture, values.pretrained, values.numCategories, values.outWidth, values.outHeight, values.batchSize, values.optimizer))
 
-	const handleChange = (event) => {
-		const newValues = { ...values, [event.target.name]: event.target.value }
-		props.onChange(getConfig(newValues.modelArchitecture, newValues.pretrained, newValues.numCategories, newValues.outWidth, newValues.outHeight, newValues.batchSize, newValues.optimizer))
-		setValues(newValues)
-	}
+  const handleChange = (event) => {
+    const newValues = { ...values, [event.target.name]: event.target.value }
+    props.onChange(getConfig(newValues.modelArchitecture, newValues.pretrained, newValues.numCategories, newValues.outWidth, newValues.outHeight, newValues.batchSize, newValues.optimizer))
+    setValues(newValues)
+  }
 
-	const handleSwitch = (event) => {
-		const newValues = { ...values, [event.target.name]: event.target.checked }
-		props.onChange(getConfig(newValues.modelArchitecture, newValues.pretrained, newValues.numCategories, newValues.outWidth, newValues.outHeight, newValues.batchSize, newValues.optimizer))
-		setValues(newValues)
-	}
+  const handleSwitch = (event) => {
+    const newValues = { ...values, [event.target.name]: event.target.checked }
+    props.onChange(getConfig(newValues.modelArchitecture, newValues.pretrained, newValues.numCategories, newValues.outWidth, newValues.outHeight, newValues.batchSize, newValues.optimizer))
+    setValues(newValues)
+  }
 
-	return (
-		<Grid
-			container
-			direction="row"
-			justify="center"
-			alignItems="flex-start"
-		>
-			<Grid item>
-				<CodeSnippetCard
-					width={680}
-					height={750}
-					codeHeight={600}
-					title="Configuration for Training"
-					subheader="JSON Format"
-					language="json"
-					code={props.configText}
-					description={"balaalskdnflas"}
-				/>
-			</Grid>
-			<Grid item>
-				<ControlledExpansionPanels
-					values={values}
-					handleOnChange={handleChange}
-					handleOnSwitch={handleSwitch}
-				/>
-			</Grid>
-		</Grid>
-	)
+  return (
+    <Grid
+      className={classes.root}
+      container
+      direction="row"
+      justify="center"
+      alignItems="flex-start"
+      spacing={8}
+    >
+      <Grid item xs={12} sm={6}>
+        <CodeSnippetCard
+          height={750}
+          title="Configuration for Training"
+          subheader="JSON Format"
+          language="json"
+          code={props.configText}
+          description={configDescription}
+        />
+      </Grid>
+      <ControlledExpansionPanels
+        values={values}
+        handleOnChange={handleChange}
+        handleOnSwitch={handleSwitch}
+      />
+
+    </Grid>
+  )
 }

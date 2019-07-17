@@ -69,7 +69,7 @@ const labelMapExample = `item {
     name: 'third_category'
   }
   `
-  
+
 const labelMapDescription = `
 To assign the categories/labels of the bounding boxes in the annotation files, the TF OD APIs script needs a mapping. 
 This mapping follows a specific structure resembling json. The file is saved with the .pbtxt extension.
@@ -78,33 +78,34 @@ This mapping follows a specific structure resembling json. The file is saved wit
 
 const useStyles = makeStyles(theme => ({
     root: {
-      width: '100%',
+        width: '100%',
     },
-  }))
+}))
 
 export default function StageOneView(props) {
     const classes = useStyles()
     return (
-        <div>
-            <Grid
-                className={classes.root}
-                container
-                direction="row"
-                justify="center"
-                alignItems="center"
-                spacing={10}
-            >
-                <Grid item>
-                    <CodeSnippetCard width={500} height={600} codeHeight={350} title="XML" subheader="PASCAL VOC Format" language="xml" code={pascalVOCExample} description={pascalVOCDescription} />
-                </Grid>
-                <Grid item>
-                    <CodeSnippetCard width={500} height={600} codeHeight={350} title="LabelMap" subheader=".pbtxt" language="json" code={labelMapExample} description={labelMapDescription} />
-                </Grid>
+        <Grid
+            className={classes.root}
+            container
+            direction="row"
+            justify="center"
+            alignItems="flex-start"
+            spacing={10}
+        >
+            <Grid item xs={12} sm={6} md={4}>
+                <CodeSnippetCard height={600} title="XML" subheader="PASCAL VOC Format" language="xml" code={pascalVOCExample} description={pascalVOCDescription} copy={true}/>
             </Grid>
-            <Typography variant="h6" component="p">
+            <Grid item xs={12} sm={6} md={4}>
+                <CodeSnippetCard height={600} title="LabelMap" subheader=".pbtxt" language="json" code={labelMapExample} description={labelMapDescription} copy={true}/>
+            </Grid>
+
+            {/* <Typography variant="h6" component="p">
                 Down below you can create the necessary TF Record files. For that you need to specify all categories of your objects. Also be sure that your annotation files have the correct format and are in the correct folder.
-            </Typography>
+            </Typography> */}
+
             <LabelMapChips labelMapCategories={props.labelMapCategories} onChange={props.onChange} />
-        </div>
+
+        </Grid>
     )
 }

@@ -16,18 +16,13 @@ const useStyles = makeStyles(theme => ({
 	},
 }))
 
-const commands = [
-	{command: 'ls', flags: '-a'},
-	{command: 'ls', flags: '-a'},
-]
-
 export default function RunCommand(props) {
 	const classes = useStyles()
 	const theme = useTheme()
 
 	const [alertCompleted, setAlertCompleted] = React.useState(false)
 	const [loading, setLoading] = React.useState(false)
-
+	const [remainingCommands, setRemainingCommands] = React.useState(props.commands)
 
 	const startReadingChunkedResponse = (response) => {
 		var reader = response.body.getReader()
@@ -42,7 +37,7 @@ export default function RunCommand(props) {
 		}
 	}
 
-	const onChunkedResponseComplete = (result) => {
+	const onChunkedResponseComplete = result => {
 		setTimeout(() => {
 			setLoading(false)
 			setAlertCompleted(true)
@@ -50,18 +45,23 @@ export default function RunCommand(props) {
 		}, 2000)
 	}
 
-	const onChunkedResponseError = (err) => {
+	const onChunkedResponseError = err => {
 		console.error(err)
+	}
+
+	const makeRequest = command => {
+		fetch('http://localhost:4000/shell', {
+			method: 'POST',
+			body: JSON.stringify(command),
+			headers: { 'Content-Type': 'application/json' }
+		}).then(startReadingChunkedResponse).then(onChunkedResponseComplete).catch(onChunkedResponseError)
 	}
 
 	const handleOnClick = () => {
 		setLoading(true)
-
-		fetch('http://localhost:4000/shell', {
-			method: 'POST',
-			body: JSON.stringify({ command: 'python', flags: ['server/test.py'] }),
-			headers: { 'Content-Type': 'application/json' }
-		}).then(startReadingChunkedResponse).then(onChunkedResponseComplete).catch(onChunkedResponseError)
+		props.commands.forEach(command => {
+			makeRequest(command)
+		})
 	}
 
 	const handleOnDialogClose = () => {

@@ -87,7 +87,7 @@ export default function Home(props) {
                         Thanks to the amazing community and great minds there are solutions for many problems publicly available.
                         So is the TensorFlow Object Detection API, that facilitates training a model to detect objects in images. This app makes it even simpler to dive into the algorithm.
                     </Typography>
-                    <Stepper orientation="vertical" activeStep={0}>
+                    {/* <Stepper orientation="vertical" activeStep={0}>
                         <Step completed={true} active={true} disabled={true}>
                             <StepButton
                                 onClick={handleStep(1)}
@@ -128,10 +128,10 @@ export default function Home(props) {
 
                             <StepContent>Test</StepContent>
                         </Step>
-                    </Stepper>
+                    </Stepper> */}
 
                     <Button onClick={handleClick(1)}>Start</Button>
-                    <form className={classes.form} noValidate>
+                    {/* <form className={classes.form} noValidate>
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -161,8 +161,8 @@ export default function Home(props) {
                             color="primary"
                             className={classes.submit}
                         >
-                            Sign In
-                        </Button>
+                            Send
+                        </Button> */}
                         <Box mt={5}>
                             <Typography variant="body1" color="textSecondary" align="center">
                                 {'Built with love by Sinan Özgün'}
@@ -191,7 +191,7 @@ export default function Home(props) {
                                 </MuiLink>
                             </Grid>
                         </Grid>
-                    </form>
+                    {/* </form> */}
                 </div>
             </Grid>
         </Grid>

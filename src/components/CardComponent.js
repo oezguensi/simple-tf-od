@@ -32,11 +32,10 @@ export default function CodeSnippetCard(props) {
 
         },
         card: {
-            width: props.width,
             height: props.height,
         },
         codeSnippet: {
-            height: props.codeHeight
+            height: props.height - (props.description ? 250 : 0)
         },
         expand: {
             transform: 'rotate(0deg)',
@@ -76,21 +75,25 @@ export default function CodeSnippetCard(props) {
                             justify="flex-end"
                             alignItems="center"
                         >
-                            <Grid item>
-                                <Fade
-                                    mountOnEnter unmountOnExit
-                                    in={copied}
-                                    {...(copied ? { timeout: 1500 } : {})}
-                                    {...(!copied ? { timeout: 1000 } : {})}
-                                >
-                                    <Typography component="div">Copied to clipboard!</Typography>
-                                </Fade>
-                            </Grid>
-                            <Grid item>
-                                <IconButton aria-label="Settings">
-                                    {copied ? <ClipboardCheck className={classes.icon} /> : <ClipboardTextOutline className={classes.icon} />}
-                                </IconButton>
-                            </Grid>
+                            {props.copy &&
+                                <div>
+                                    <Grid item>
+                                        <Fade
+                                            mountOnEnter unmountOnExit
+                                            in={copied}
+                                            {...(copied ? { timeout: 1500 } : {})}
+                                            {...(!copied ? { timeout: 1000 } : {})}
+                                        >
+                                            <Typography component="div">Copied to clipboard!</Typography>
+                                        </Fade>
+                                    </Grid>
+                                    <Grid item>
+                                        <IconButton aria-label="Settings">
+                                            {copied ? <ClipboardCheck className={classes.icon} /> : <ClipboardTextOutline className={classes.icon} />}
+                                        </IconButton>
+                                    </Grid>
+                                </div>
+                            }
                         </Grid>
                     </CopyToClipboard>
 
@@ -98,14 +101,18 @@ export default function CodeSnippetCard(props) {
                 title={props.title}
                 subheader={props.subheader}
             />
-            <Highlight language={props.language} className={classes.codeSnippet}>
-                {props.code}
-            </Highlight>
-            <CardContent>
-                <Typography variant="body2" color="textSecondary" component="p">
-                    {props.description}
-                </Typography>
-            </CardContent>
+            <CardMedia>
+                <Highlight language={props.language} className={classes.codeSnippet}>
+                    {props.code}
+                </Highlight>
+            </CardMedia>
+            {props.description &&
+                <CardContent>
+                    <Typography variant="body2" color="textSecondary" component="p">
+                        {props.description}
+                    </Typography>
+                </CardContent>
+            }
         </Card>
     );
 }

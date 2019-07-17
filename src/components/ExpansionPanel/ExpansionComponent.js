@@ -16,9 +16,6 @@ import BatchSizeTab from './includes/BatchSizeTab'
 import OptimizerTab from './includes/OptimizerTab'
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    minWidth: 900
-  },
   heading: {
     fontSize: theme.typography.pxToRem(20),
     flexBasis: '33.33%',
@@ -31,11 +28,6 @@ const useStyles = makeStyles(theme => ({
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-  },
-  formControl: {
-    marginTop: theme.spacing(2),
-    margin: theme.spacing(1),
-    minWidth: 250,
   },
 }))
 
@@ -89,7 +81,7 @@ export default function ControlledExpansionPanels(props) {
   }
 
   return (
-    <Container fixed className={classes.root}>
+    <Grid item xs={12} sm={6}>
       {getPanelData().map((data, index) => {
         return (
           <ExpansionPanel key={index} expanded={expanded === index} onChange={handleExpand(index)}>
@@ -118,6 +110,6 @@ export default function ControlledExpansionPanels(props) {
           </ExpansionPanel>
         )
       })}
-    </Container>
+    </Grid>
   )
 }
