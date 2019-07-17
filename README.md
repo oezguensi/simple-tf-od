@@ -4,4 +4,4 @@ An application that helps start training TensorFlows Object Detection right away
 
 # Usage
 
-To open the React app run `npm start` and to create the Node server run `node. server/app.js` from the root directory.
+To open the React app run `npm start` and to create the Node server run `node server/app.js` from the root directory.
