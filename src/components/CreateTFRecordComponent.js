@@ -1,5 +1,5 @@
 import React from 'react'
-import { CircularProgress, Zoom, Fab } from '@material-ui/core'
+import { CircularProgress, Zoom, Fab, Dialog, Paper, Container, Grid } from '@material-ui/core'
 import AlertDialogSlide from './AlertComponent'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { Download } from 'mdi-material-ui'
@@ -37,7 +37,7 @@ export default function CreateTFRecord(props) {
 		const outString = new TextDecoder("utf-8").decode(result.value)
 		const newProgress = outString.split(" ")[1]
 		if (outString.includes('% of annotations') && newProgress > initialProgress) setProgress(newProgress)
-		
+
 		if (!result.done) return reader.read().then(result => processChunks(result, reader));
 	}
 
@@ -84,10 +84,17 @@ export default function CreateTFRecord(props) {
 	}
 
 	return (
-		(loading ?
-			<CircularProgress variant="static" value={progress} />
-			:
-			(alertCompleted ?
+		<div>
+			<Dialog
+				open={loading}
+				PaperComponent={Grid}
+				keepMounted
+				disableBackdropClick={true}
+			>
+				<CircularProgress size={75} thickness={4} variant="static" value={progress} />
+			</Dialog>
+
+			{alertCompleted ?
 				<AlertDialogSlide onDialogClose={handleOnDialogClose} />
 				:
 				<Zoom
@@ -109,8 +116,7 @@ export default function CreateTFRecord(props) {
 						<Download className={classes.extendedIcon} />
 						Download
 					</Fab>
-				</Zoom>
-			)
-		)
+				</Zoom>}
+		</div>
 	)
 }

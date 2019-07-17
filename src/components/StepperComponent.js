@@ -69,8 +69,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 			match={props.match}
 			transitionDuration={transitionDuration}
 			labelMapCategories={labelMapCategories}
-			// disabled={labelMapCategories.length === 0}
-			disabled={true}
+			disabled={labelMapCategories.length === 0}
 			onComplete={handleComplete}
 		/>
 	}, {
@@ -168,7 +167,6 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 						const buttonProps = {}
 
 						return (
-
 							<Step key={data.stepperTitle} {...stepProps}>
 								<StepButton
 									onClick={handleStep(index + 1)}
@@ -195,38 +193,8 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 				{steps[parseInt(props.match.params.id) - 1].content}
 
 
+				{steps[parseInt(props.match.params.id) - 1].action}
 
-				{/* {fabs.map((fab, index) => (
-					<Zoom
-						key={index}
-						in={parseInt(props.match.params.id) - 1 === index}
-						timeout={transitionDuration}
-						style={{
-							transitionDelay: `${parseInt(props.match.params.id) - 1 === index ? transitionDuration.exit : 0}ms`,
-						}}
-						unmountOnExit
-					>
-						<Fab disabled={fab.disable} aria-label={fab.label} className={fab.className} color={fab.color} variant="extended">
-							{fab.icon}
-							{fab.label}
-						</Fab>
-					</Zoom>
-				))} */}
-
-				<div>
-					{/* <Button disabled={parseInt(props.match.params.id) - 1 === 0} onClick={handleBack} className={classes.button}>
-						Back
-					</Button>
-					<Button
-						variant="outlined"
-						color="default"
-						onClick={handleNext}
-						className={classes.button}
-					>
-						Next
-					</Button> */}
-					{steps[parseInt(props.match.params.id) - 1].action}
-				</div>
 			</Grid>
 
 		</Grid>
