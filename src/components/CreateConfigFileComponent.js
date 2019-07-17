@@ -1,9 +1,24 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { CircularProgress, Zoom, Fab } from '@material-ui/core'
+import { Download } from 'mdi-material-ui'
 import AlertDialogSlide from './AlertComponent'
 
+const useStyles = makeStyles(theme => ({
+    fab: {
+        position: 'absolute',
+        bottom: theme.spacing(5),
+        right: theme.spacing(7),
+    },
+    extendedIcon: {
+        marginRight: theme.spacing(1),
+    },
+}))
+
 export default function CreateConfigFileComponent(props) {
+    const classes = useStyles()
+    const theme = useTheme()
+
     const [alertCompleted, setAlertCompleted] = React.useState(false)
     const [loading, setLoading] = React.useState(false)
 
@@ -34,14 +49,31 @@ export default function CreateConfigFileComponent(props) {
 
     return (
         (loading ?
-            <CircularProgress color="primary"/>
+            <CircularProgress color="primary" />
             :
             (alertCompleted ?
                 <AlertDialogSlide onDialogClose={handleOnDialogClose} />
                 :
-                <Button disabled={props.disabled} variant="contained" color="primary" onClick={handleOnClick}>
-                    Download
-          </Button>
+                <Zoom
+                    in={parseInt(props.match.params.id) - 1 === props.index}
+                    timeout={props.transitionDuration}
+                    style={{
+                        transitionDelay: `${parseInt(props.match.params.id) - 1 === props.index ? props.transitionDuration.exit : 0}ms`,
+                    }}
+                    unmountOnExit
+                >
+                    <Fab
+                        onClick={handleOnClick}
+                        disabled={props.disabled}
+                        aria-label="Download"
+                        className={classes.fab}
+                        color={'primary'}
+                        variant="extended"
+                    >
+                        <Download className={classes.extendedIcon} />
+                        Download
+                </Fab>
+                </Zoom>
             )
         )
     )

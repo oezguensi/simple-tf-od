@@ -1,5 +1,5 @@
 import React from 'react'
-import { CircularProgress, Button, Zoom, Fab } from '@material-ui/core'
+import { CircularProgress, Zoom, Fab } from '@material-ui/core'
 import AlertDialogSlide from './AlertComponent'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { Download } from 'mdi-material-ui'
@@ -87,7 +87,6 @@ export default function CreateTFRecord(props) {
 			(alertCompleted ?
 				<AlertDialogSlide onDialogClose={handleOnDialogClose} />
 				:
-				// <Button disabled={props.disabled} variant="contained" color="primary" onClick={handleOnClick}>Download</Button>
 				<Zoom
 					in={parseInt(props.match.params.id) - 1 === props.index}
 					timeout={props.transitionDuration}

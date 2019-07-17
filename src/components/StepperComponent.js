@@ -89,7 +89,14 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 		header: "h3. Heading",
 		description: "h4. Heading",
 		content: <StageTwoView numCategories={labelMapCategories.length} configText={configText} onChange={setConfigText} />,
-		action: <CreateConfigFileComponent configText={configText} onComplete={handleComplete} />
+		action: <CreateConfigFileComponent
+			index={1}
+			match={props.match}
+			transitionDuration={transitionDuration}
+			disabled={false}
+			configText={configText}
+			onComplete={handleComplete}
+		/>
 	}, {
 		stepperTitle: 'Start training',
 		header: "h3. Heading",
@@ -99,7 +106,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 	}]
 
 
-	
+
 
 	const fabs = [
 		{
@@ -241,7 +248,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 				))} */}
 
 				<div>
-					<Button disabled={parseInt(props.match.params.id) - 1 === 0} onClick={handleBack} className={classes.button}>
+					{/* <Button disabled={parseInt(props.match.params.id) - 1 === 0} onClick={handleBack} className={classes.button}>
 						Back
 					</Button>
 					<Button
@@ -251,7 +258,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 						className={classes.button}
 					>
 						Next
-					</Button>
+					</Button> */}
 					{steps[parseInt(props.match.params.id) - 1].action}
 				</div>
 			</Grid>
