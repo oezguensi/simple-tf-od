@@ -10,6 +10,7 @@ import CreateTFRecord from './CreateTFRecordComponent'
 import CreateConfigFileComponent from './CreateConfigFileComponent'
 import StageOneView from '../views/StageOneView'
 import StageTwoView from '../views/StageTwoView'
+import StageThreeView from '../views/StageThreeView'
 import RunCommand from './RunCommandComponent'
 
 const useStyles = makeStyles(theme => ({
@@ -88,7 +89,7 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 		stepperTitle: 'Start training',
 		header: "h3. Heading",
 		description: "h4. Heading",
-		content: null,
+		content: <StageThreeView />,
 		action: <RunCommand
 			index={2}
 			match={props.match}
