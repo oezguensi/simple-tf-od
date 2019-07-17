@@ -18,6 +18,7 @@ const useStyles = makeStyles(theme => ({
 export default function CreateTFRecord(props) {
 	const classes = useStyles()
 	const theme = useTheme()
+	const initialProgress = 5
 
 	const [loading, setLoading] = React.useState(false)
 	const [alertCompleted, setAlertCompleted] = React.useState(false)
@@ -33,10 +34,11 @@ export default function CreateTFRecord(props) {
 	}
 
 	const processChunks = (result, reader) => {
-		if (!result.done) {
-			setProgress(progress + 5)
-			return reader.read().then(result => processChunks(result, reader));
-		}
+		const outString = new TextDecoder("utf-8").decode(result.value)
+		const newProgress = outString.split(" ")[1]
+		if (outString.includes('% of annotations') && newProgress > initialProgress) setProgress(newProgress)
+		
+		if (!result.done) return reader.read().then(result => processChunks(result, reader));
 	}
 
 	const onChunkedResponseComplete = (result) => {
@@ -53,8 +55,10 @@ export default function CreateTFRecord(props) {
 	}
 
 	const handleOnClick = () => {
-		console.log(createLabelMap(props.labelMapCategories))
 		setLoading(true)
+		setTimeout(() => {
+			setProgress(initialProgress)
+		}, 1000)
 
 		fetch('http://localhost:4000/scripts/chunked', {
 			method: 'POST',

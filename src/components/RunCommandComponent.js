@@ -16,6 +16,11 @@ const useStyles = makeStyles(theme => ({
 	},
 }))
 
+const commands = [
+	{command: 'ls', flags: '-a'},
+	{command: 'ls', flags: '-a'},
+]
+
 export default function RunCommand(props) {
 	const classes = useStyles()
 	const theme = useTheme()
@@ -23,17 +28,40 @@ export default function RunCommand(props) {
 	const [alertCompleted, setAlertCompleted] = React.useState(false)
 	const [loading, setLoading] = React.useState(false)
 
+
+	const startReadingChunkedResponse = (response) => {
+		var reader = response.body.getReader()
+		return reader.read().then(result => processChunks(result, reader))
+	}
+
+	const processChunks = (result, reader) => {
+		console.log(result)
+		console.log(new TextDecoder("utf-8").decode(result.value))
+		if (!result.done) {
+			return reader.read().then(result => processChunks(result, reader))
+		}
+	}
+
+	const onChunkedResponseComplete = (result) => {
+		setTimeout(() => {
+			setLoading(false)
+			setAlertCompleted(true)
+			console.log('Finished process!', result)
+		}, 2000)
+	}
+
+	const onChunkedResponseError = (err) => {
+		console.error(err)
+	}
+
 	const handleOnClick = () => {
 		setLoading(true)
 
 		fetch('http://localhost:4000/shell', {
 			method: 'POST',
-			body: JSON.stringify({ command: 'ls -a' }),
+			body: JSON.stringify({ command: 'python', flags: ['server/test.py'] }),
 			headers: { 'Content-Type': 'application/json' }
-		}).then(() => {
-			setAlertCompleted(true)
-			setLoading(false)
-		}).catch(console.error)
+		}).then(startReadingChunkedResponse).then(onChunkedResponseComplete).catch(onChunkedResponseError)
 	}
 
 	const handleOnDialogClose = () => {
@@ -71,5 +99,4 @@ export default function RunCommand(props) {
 			)
 		)
 	)
-
 }

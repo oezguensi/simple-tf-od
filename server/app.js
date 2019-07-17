@@ -40,7 +40,6 @@ app.post('/scripts/chunked', function (req, res, next) {
       console.log(message)
       res.write(message)
       res.flush()
-
     }
   })
 
@@ -87,41 +86,26 @@ app.post('/scripts/full', function (req, res, next) {
 })
 
 
-// app.post('/shell', function (req, res, next) {
-//   const output = execSync(req.body.command, { encoding: 'utf-8' });  // the default is 'buffer'
-//   console.log('Output was:\n', output);
-// })
-
-
-// const startReadingChunkedResponse = (response) => {
-//   var reader = response.body.getReader()
-//   return reader.read().then(result => processChunks(result, reader));
-// }
-
-// const processChunks = (result, reader) => {
-//   if (!result.done) {
-//     setProgress(progress + 5)
-//     return reader.read().then(result => processChunks(result, reader));
-//   }
-// }
-
-
-
 app.post('/shell', function (req, res, next) {
-  const child = spawn('cd ..')
-  // use child.stdout.setEncoding('utf8'); if you want text chunks
+  res.writeHead(200, {
+    'Connection': 'Transfer-Encoding',
+    'Content-Type': 'text/plain charset=utf-8',
+    'Transfer-Encoding': 'chunked',
+    'X-Content-Type-Options': 'nosniff'
+  })
+
+  const child = spawn(req.body.command, req.body.flags)
   child.stdout.setEncoding('utf8')
   child.stdout.on('data', (chunk) => {
     console.log(chunk)
+    res.write(chunk)
+    res.flush()
   })
-
-  // since these are streams, you can pipe them elsewhere
-  // child.stderr.pipe(dest);
 
   child.on('close', (code) => {
     console.log(`child process exited with code ${code}`);
+    res.end('Finished running commands!')
   })
-
 })
 
 

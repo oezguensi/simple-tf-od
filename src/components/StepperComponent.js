@@ -69,7 +69,8 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 			match={props.match}
 			transitionDuration={transitionDuration}
 			labelMapCategories={labelMapCategories}
-			disabled={labelMapCategories.length === 0}
+			// disabled={labelMapCategories.length === 0}
+			disabled={true}
 			onComplete={handleComplete}
 		/>
 	}, {

@@ -132,7 +132,7 @@ def main():
 
       for idx, (img_file, annotation_file) in enumerate(zip(img_files, annotation_files)):
           if (((idx + 1) // len(annotation_files)) * 100) % 5 == 0:
-              print('Loaded {} percent of annotations'.format(((idx + 1) // len(annotation_files)) * 100))
+              print('Loaded {} % of annotations'.format(((idx + 1) // len(annotation_files)) * 100))
 
           for i in range(10000):
             i * 2
