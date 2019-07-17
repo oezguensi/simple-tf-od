@@ -72,7 +72,7 @@ export default function CreateConfigFileComponent(props) {
                     >
                         <Download className={classes.extendedIcon} />
                         Download
-                </Fab>
+                    </Fab>
                 </Zoom>
             )
         )

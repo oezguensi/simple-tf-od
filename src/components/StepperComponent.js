@@ -3,27 +3,14 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepButton from '@material-ui/core/StepButton'
-import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography';
+import Typography from '@material-ui/core/Typography'
 
-import UploadAnnotations from './UploadAnnotationsComponent'
-import LabelMapChips from './LabelMapComponent'
-import ControlledExpansionPanels from './ExpansionPanel/ExpansionComponent'
 import CreateTFRecord from './CreateTFRecordComponent'
 import CreateConfigFileComponent from './CreateConfigFileComponent'
-import CodeSnippetCard from './CardComponent'
 import StageOneView from '../views/StageOneView'
 import StageTwoView from '../views/StageTwoView'
 import RunCommand from './RunCommandComponent'
-import Zoom from '@material-ui/core/Zoom';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
-import UpIcon from '@material-ui/icons/KeyboardArrowUp';
-
-import { Download, Check } from 'mdi-material-ui'
-
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -102,37 +89,14 @@ export default function HorizontalNonLinearAlternativeLabelStepper(props) {
 		header: "h3. Heading",
 		description: "h4. Heading",
 		content: null,
-		action: <RunCommand disabled={allStepsCompleted()} />
+		action: <RunCommand
+			index={2}
+			match={props.match}
+			transitionDuration={transitionDuration}
+			disabled={!allStepsCompleted()}
+			onComplete={handleComplete}
+		/>
 	}]
-
-
-
-
-	const fabs = [
-		{
-			color: 'primary',
-			className: classes.fab,
-			icon: <Download className={classes.extendedIcon} />,
-			label: 'Download',
-			disable: labelMapCategories.length !== totalSteps()
-		},
-		{
-			color: 'primary',
-			className: classes.fab,
-			icon: <Download className={classes.extendedIcon} />,
-			label: 'Download',
-			disable: false
-		},
-		{
-			color: 'primary',
-			className: classes.fab,
-			icon: <Check className={classes.extendedIcon} />,
-			label: 'Start training',
-			disable: !allStepsCompleted()
-		},
-	];
-
-
 
 	function totalSteps() {
 		return 3
