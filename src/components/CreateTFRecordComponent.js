@@ -73,7 +73,7 @@ export default function CreateTFRecord(props) {
 					'--imgs_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/data/imgs',
 					'--annotations_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/data/annotations',
 					`--label_map_dict={${createLabelMap(props.labelMapCategories)}}`,
-					'--out_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/records'],
+					'--out_dir=/Users/oezguensi/Code/Other\ Projects/simple-tf-od/outputs'],
 			})
 		}).then(startReadingChunkedResponse).then(onChunkedResponseComplete).catch(onChunkedResponseError)
 	}
